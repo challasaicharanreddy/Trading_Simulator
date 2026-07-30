@@ -14,5 +14,8 @@
   "type": "module",
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "mongoose": "^9.8.1"
   }
 }
