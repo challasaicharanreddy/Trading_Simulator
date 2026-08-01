@@ -2,8 +2,8 @@
 # Dependencies
 # ===========================
 node_modules/
-client/node_modules/
-server/node_modules/
+frontend/node_modules/
+backend/node_modules/
 
 # ===========================
 # Environment Variables
@@ -14,8 +14,8 @@ server/node_modules/
 .env.test.local
 .env.production.local
 
-client/.env
-server/.env
+backend/.env
+frontend/.env
 
 # ===========================
 # Logs

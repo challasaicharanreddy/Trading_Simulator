@@ -1,34 +1,37 @@
 import axios from "axios";
 import redisClient from "../config/redis.js";
 
-const ALPHA_VANTAGE_BASE='https://www.alphavantage.co/query';
+const FINNHUB_BASE="https://finnhub.io/api/v1/quote";
 const CACHE_TTL_SEC=60;
 
 async function fetchPriceFromAPI(symbol){
-    const response=await axios.get(ALPHA_VANTAGE_BASE,{
+    const response=await axios.get(FINNHUB_BASE,{
         params:{
-            function:'GLOBAL_QUOTE',
             symbol:symbol,
-            apikey:process.env.ALPHA_VANTAGE_KEY,
+            token:process.env.FINNHUB_API_KEY,
         }
     });
 
     console.log('RAW API RESPONSE:', JSON.stringify(response.data, null, 2));
 
-const quote=response.data['Global Quote'];
-if(!quote|| !quote['05. price']){
-    throw new Error(`No price fetched for symbol: ${symbol}`);
-}
-console.log(quote);
+    const data = response.data;
+
+    // Finnhub returns 0 for all fields if the symbol is invalid or unsupported
+    if (!data || data.c === 0) {
+      throw new Error(`No price fetched for symbol: ${symbol}`);
+    }
+console.log(data);
 return {
-    symbol:quote['01. symbol'],
-    price:parseFloat(quote['05. price']),
-    open:parseFloat(quote['02. open']),
-    high:parseFloat(quote['03. high']),
-    low:parseFloat(quote['04. low']),
-    volume:parseInt(quote['06. volume']),
-    timestamp:Date.now(),
-};
+    symbol: symbol,
+    price: data.c,        
+    open: data.o,           
+    high: data.h,         
+    low: data.l,          
+    previousClose: data.pc, 
+    change: data.d,    
+    changePercent: data.dp, 
+    timestamp: Date.now(),
+  };
 }
 
 async function fetchWithCache(symbol){
