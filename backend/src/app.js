@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import commonMiddleware from "./middlewares/common.middleware.js"
 import authroutes from "./routes/authroutes.js"
+import marketRoutes from "./routes/market.routes.js";
 
 const app=express();
 
@@ -11,5 +12,13 @@ app.use(cookieParser());
 app.use('/auth',authroutes);
 
 app.use('/app',commonMiddleware);
+
+
+app.use(express.json());
+app.use("/api/market",marketRoutes);
+app.get("/api/health",(req,res)=>{
+    res.json({status:"ok"});
+});
+
 
 export default app;

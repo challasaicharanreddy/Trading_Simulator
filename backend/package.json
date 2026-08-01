@@ -18,9 +18,12 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.3",
+    "axios": "^1.19.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
+    "ioredis": "^6.0.0",
     "mongoose": "^9.8.1"
   }
 }
