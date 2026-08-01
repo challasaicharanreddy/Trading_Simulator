@@ -1,14 +1,16 @@
-import app from "../app.js";
+import express from "express"
 import users from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const Model=users;
+const router=express.Router()
 
-app.post("/auth/register",async (req,res)=>{
+router.post("/register",async (req,res)=>{
+    console.log(req)
     const info=req.body;
     const finduser=await Model.findOne({email:info.email});
-    if(!finduser) {
+    if(finduser) {
         return res.status(409).json({
             message: "User already exists. Please log in."
         });
@@ -25,7 +27,7 @@ app.post("/auth/register",async (req,res)=>{
     });
 });
 
-app.post("/auth/login",async (req,res)=>{
+router.post("/login",async (req,res)=>{
     const {email,password}=req.body;
     const finduser=await Model.findOne({email});
     if(!finduser) {
@@ -64,10 +66,12 @@ app.post("/auth/login",async (req,res)=>{
     });
 });
 
-app.post("/auth/logout",(req,res)=>{
+router.post("/logout",(req,res)=>{
     res.clearCookie("token");
 
-    return res.status(201).json({
+    return res.status(200).json({
         message:"User logged out successfully"
     });
 });
+
+export default router;
