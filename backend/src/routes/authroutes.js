@@ -1,5 +1,6 @@
 import express from "express"
 import users from "../models/users.js";
+import Portfolio from "../models/portfolio.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -20,6 +21,11 @@ router.post("/register",async (req,res)=>{
         username:info.username,
         email:info.email,
         password:hashed_password
+    });
+
+    await Portfolio.create({
+        user: user._id,
+        cashBalance: 1000000, 
     });
 
     return res.status(201).json({
