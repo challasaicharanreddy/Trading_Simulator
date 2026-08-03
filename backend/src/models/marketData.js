@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     symbol: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "stocks",
+        type: String,
         required: true
     },
     open: {
@@ -22,14 +21,15 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    volume: {
-        type: Number,
-        required: true
-    },
     timestamp: {
         type: Date,
         default: Date.now
     }
 });
+
+userSchema.index(
+    { timestamp: 1 },
+    { expireAfterSeconds: 20 * 24 * 60 * 60 }
+);
 
 export default mongoose.model("MarketData", userSchema);

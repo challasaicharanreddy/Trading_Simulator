@@ -15,8 +15,8 @@ app.use('/app',commonMiddleware);
 
 
 app.use(express.json());
-app.use("/api/market",marketRoutes);
-app.get("/api/health",(req,res)=>{
+app.use("/app/api/market",marketRoutes);
+app.get("/app/api/health",(req,res)=>{
     res.json({status:"ok"});
 });
 
