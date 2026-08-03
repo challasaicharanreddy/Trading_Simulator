@@ -12,8 +12,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   symbol: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "stocks",
+    type: String,
     required: true,
   },
   quantity: {
@@ -21,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: 1,
   },
-  totalAmount: {
+  price: {
     type: Number,
     required: true,
     min: 0,
@@ -30,6 +29,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["BUY", "SELL"],
     required: true,
+  },
+  executedAt: {
+    type: Date,
+    default: Date.now,
   }
 });
 

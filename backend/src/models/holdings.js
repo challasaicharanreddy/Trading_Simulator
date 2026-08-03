@@ -7,13 +7,20 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     symbol: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "stocks",
+        type: String,
         required: true,
     },
     quantity: {
         type: Number,
         required: true,
-    }
+    },
+    avgCostPrice: {
+        type: Number,
+        required: true,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 export default mongoose.model("Holding", userSchema);

@@ -7,18 +7,15 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
       },
-  
-      cash: {
+      cashBalance: {
         type: Number,
         required: true,
         default: 1000000,
         min: 0,
       },
-      totalInvested: {
-        type: Number,
-        required: true,
-        default: 0,
-        min: 0,
+      createdAt: {
+        type: Date,
+        default: Date.now,
       }
     }
 );
