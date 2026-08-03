@@ -6,6 +6,7 @@ const CACHE_TTL_SEC=60;
 
 async function fetchPriceFromAPI(symbol){
     const response=await axios.get(FINNHUB_BASE,{
+        timeout:10000,
         params:{
             symbol:symbol,
             token:process.env.FINNHUB_API_KEY,
@@ -16,7 +17,6 @@ async function fetchPriceFromAPI(symbol){
 
     const data = response.data;
 
-    // Finnhub returns 0 for all fields if the symbol is invalid or unsupported
     if (!data || data.c === 0) {
       throw new Error(`No price fetched for symbol: ${symbol}`);
     }
@@ -47,4 +47,4 @@ async function fetchWithCache(symbol){
     return priceData;
 }
 
-export {fetchWithCache};
+export {fetchWithCache,fetchPriceFromAPI};

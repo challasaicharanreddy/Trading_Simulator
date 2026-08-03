@@ -1,8 +1,7 @@
 import app from "./app.js";
 import connectdb from "./config/db.js";
-
+import scheduler from "./jobs/scheduler.js";
 import mongoose from "mongoose";
-import redisClient from "./config/redis.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -16,5 +15,6 @@ const startserver=async ()=>{
     });
 }
 startserver();
+scheduler();
 
 
