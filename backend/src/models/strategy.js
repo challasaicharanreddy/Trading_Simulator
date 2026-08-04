@@ -7,18 +7,21 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     symbol: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "stocks",
+        type: String,
         required: true,
     },
     indicator: {
         type: String,
-        Enum: ["SMA", "EMA", "RSI", "MACD"],
+        enum: ["SMA", "RSI"],
+        required: true,
+    },
+    period: {
+        type: Number,
         required: true,
     },
     operator:{
         type: String,
-        Enum: ['<', '>'],
+        enum: ['<', '>'],
         required: true,
     },
     threshold: {
@@ -27,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     action: {
         type: String,
-        Enum: ["BUY", "SELL"],
+        enum: ["BUY", "SELL"],
         required: true,
     },
     quantity: {
@@ -36,7 +39,7 @@ const userSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        Enum: ["ACTIVE", "INACTIVE"],
+        enum: ["ACTIVE", "INACTIVE"],
         default: "ACTIVE",
     }
 });
