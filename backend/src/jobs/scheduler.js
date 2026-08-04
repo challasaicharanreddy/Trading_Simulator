@@ -1,6 +1,7 @@
 import RedisClient from "../config/redis.js";
-import { fetchPriceFromAPI } from "../services/marketData.js";
+import { fetchPriceFromAPI,fetchWithCache } from "../services/marketData.js";
 import marketdata from "../models/marketData.js";
+import candleAggregation from "../services/candleAggregation.js";
 
 
 const Model=marketdata;
@@ -10,10 +11,7 @@ const symbols=["AAPL","MSFT","TSLA","TITN","NVDA","AMZN","GOOGL","META"];
 async function scheduler() {
     setInterval(async () => {
         for(const stock of symbols) {
-            const data=await fetchPriceFromAPI(stock);
-            const cacheKey=`price:${stock}`;
-            const CACHE_TTL_SEC = 10;
-            await RedisClient.set(cacheKey,JSON.stringify(data),'EX',CACHE_TTL_SEC);
+            const data=await fetchWithCache(stock);
             try {
                 const update_in_db=await Model.create({
                     symbol:stock,
@@ -35,6 +33,16 @@ async function scheduler() {
         }
         
     }, 10000);
+
+    setInterval(async() => {
+        for(const stock of symbols) {
+            try{
+                await candleAggregation(stock);
+            }catch(err) {
+                console.log("Error in aggregating candles every min"+" "+err);
+            }
+        }
+    }, 60000);
 }
 
 export default scheduler;

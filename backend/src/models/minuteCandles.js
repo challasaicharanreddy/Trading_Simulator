@@ -1,9 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const candleSchema=new mongoose.Schema({
     symbol: {
         type: String,
         required: true
+    },
+    interval:{
+        type:String,
+        default:"1MIN"
     },
     open: {
         type: Number,
@@ -25,15 +29,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-});
-
-userSchema.index(
+})
+candleSchema.index(
     { timestamp: 1 },
-    { expireAfterSeconds: 1 * 24 * 60 * 60 }
+    { expireAfterSeconds: 365 * 24 * 60 * 60 }
 );
-userSchema.index({
-    symbol: 1,
-    timestamp: 1
-});
+candleSchema.index({
+    symbol:1,
+    timestamp:1
+})
 
-export default mongoose.model("MarketData", userSchema);
+export default mongoose.model("MinuteCandle", candleSchema);
