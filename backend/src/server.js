@@ -15,6 +15,6 @@ const startserver=async ()=>{
     });
 }
 startserver();
-scheduler();
+//scheduler();
 
 
