@@ -1,13 +1,16 @@
 // routes/orders.routes.js
 import express from "express";
 import { executeBuyOrder, executeSellOrder } from "../services/orderEngine.js";
+import { fetchWithCache } from "../services/marketData.js";
 
 const router = express.Router();
 
 router.post("/buy",async (req, res) => {
   try {
-    const { symbol, quantity, price } = req.body;
+    const { symbol, quantity } = req.body;
     const userId = req.user.id; 
+    const data=await fetchWithCache(symbol);
+    const price=data.price;
 
     if (!symbol || !quantity || !price) {
       return res.status(400).json({ error: "symbol, quantity, and price are required" });
@@ -22,8 +25,9 @@ router.post("/buy",async (req, res) => {
 
 router.post("/sell", async (req, res) => {
   try {
-    const { symbol, quantity, price } = req.body;
+    const { symbol, quantity } = req.body;
     const userId = req.user.id;
+    const price=await fetchWithCache(symbol);
 
     if (!symbol || !quantity || !price) {
       return res.status(400).json({ error: "symbol, quantity, and price are required" });
