@@ -11,7 +11,7 @@ router.get("/",async(req,res)=>{
     const userid=req.user.id;
     const user_portfolio=await Model.findOne({user:userid});
     const portfolio_id=user_portfolio._id;
-    const user_holdings=await Model2.findOne({portfolio:portfolio_id});
+    const user_holdings=await Model2.find({portfolio:portfolio_id});
     const cashBalance=user_portfolio.cashBalance;
     const details=await getdetails(user_holdings);
 
