@@ -6,7 +6,7 @@ const router=express.Router();
 router.post("/", async(req,res)=>{
     try{
         const {symbol, indicator, period, operator, threshold, action, quantity}=req.body;
-        const userId=req.user._id;
+        const userId=req.user.id;
 
         if(!symbol || !indicator || !period || !operator || threshold == undefined|| !action || !quantity){
             return res.status(400).json({error:"All fields are required"});

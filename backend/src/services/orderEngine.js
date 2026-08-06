@@ -47,6 +47,8 @@ async function executeBuyOrder(userId, symbol, quantity, price){
         executedAt: Date.now()
     });
 
+    console.log("Buy order executed successfully");
+
     return {transaction,holding,cashBalance:portfolio.cashBalance};
 } 
 
@@ -84,7 +86,7 @@ async function executeSellOrder(userId,symbol, quantity, price){
         action: "SELL",
         executedAt: Date.now()
     });
-
+    console.log("sell order executed successfully");
     return {transaction, holding, cashBalance: portfolio.cashBalance};
 }
 
