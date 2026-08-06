@@ -2,7 +2,7 @@ import RedisClient from "../config/redis.js";
 import { fetchPriceFromAPI,fetchWithCache } from "../services/marketData.js";
 import marketdata from "../models/marketData.js";
 import candleAggregation from "../services/candleAggregation.js";
-
+import {checkAndExecuteStrategies} from "../services/strategyChecker.js";
 
 const Model=marketdata;
 
@@ -38,6 +38,7 @@ async function scheduler() {
         for(const stock of symbols) {
             try{
                 await candleAggregation(stock);
+                const result=await checkAndExecuteStrategies(stock);
             }catch(err) {
                 console.log("Error in aggregating candles every min"+" "+err);
             }
