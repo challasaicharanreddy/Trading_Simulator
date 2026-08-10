@@ -5,7 +5,8 @@ import authroutes from "./routes/authroutes.js"
 import marketRoutes from "./routes/market.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
 import strategyRoutes from "./routes/strategy.routes.js";
-import portfolioRoutes from "./routes/portfolio.routes.js"
+import portfolioRoutes from "./routes/portfolio.routes.js";
+import backtestRoutes from "./routes/backtest.routes.js";
 
 const app=express();
 
@@ -18,6 +19,7 @@ app.use("/app/api/market",marketRoutes);
 app.use("/app/api/orders", ordersRoutes);
 app.use("/app/api/strategies", strategyRoutes);
 app.use("/app/portfolio",portfolioRoutes);
+app.use("/app/backtest",backtestRoutes)
 app.get("/app/api/health",(req,res)=>{
     res.json({status:"ok"});
 });

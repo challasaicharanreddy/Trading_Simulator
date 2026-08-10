@@ -10,7 +10,7 @@ export default function(req,res,next) {
         }
         const valid=jwt.verify(token,process.env.JWT_SECRET)
         req.user=valid;
-        console.log(valid);
+        // console.log(valid);
         next();
     } catch(err) {
         return res.status(401).json({
