@@ -1,11 +1,13 @@
 function calculateSMA(prices,period){
-    if(prices.length<period)return null;
+    // if(prices.length<period)return null;
+    period=Math.min(period,prices.length);
     const relevant=prices.slice(-period);
-    return relevant.reduce((sum,p)=> sum+p, 0)/period;
+    return relevant.reduce((sum,p)=> sum+p, 0)/(relevant.length);
 }
 
 function calculateRSI(prices,period){
-    if(prices.length<period+1)return null;
+    // if(prices.length<period+1)return null;
+    period=Math.min(period,prices.length);
     const relevant=prices.slice(-(period+1));
     let gains=0;
     let losses=0;
@@ -15,13 +17,14 @@ function calculateRSI(prices,period){
         if(change>0) gains+=change;
         else losses+=Math.abs(change);
 
-        const avgGain=gains/period;
-        const avgLoss=losses/period;
+    }
+
+        const avgGain=gains/(relevant.length -1);
+        const avgLoss=losses/(relevant.length -1);
 
         if(avgLoss===0)return 100;
         const rs=avgGain/avgLoss;
-    }
-    return (100-(100/(1+rs)));
+        return (100-(100/(1+rs)));
 
 }
 export {calculateSMA,calculateRSI};
