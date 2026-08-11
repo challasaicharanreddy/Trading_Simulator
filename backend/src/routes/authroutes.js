@@ -3,6 +3,7 @@ import users from "../models/users.js";
 import Portfolio from "../models/portfolio.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import commonMiddleware from "../middlewares/common.middleware.js";
 
 const Model=users;
 const router=express.Router()
@@ -10,6 +11,10 @@ const router=express.Router()
 router.post("/register",async (req,res)=>{
     console.log(req)
     const info=req.body;
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: "username, email, and password are required" });
+    }
     const finduser=await Model.findOne({email:info.email});
     if(finduser) {
         return res.status(409).json({
@@ -60,7 +65,7 @@ router.post("/login",async (req,res)=>{
             expiresIn: "1d"
         }
     );
-    res.cookie("token", token, {
+    res.cookie("accessToken", token, {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
@@ -73,11 +78,19 @@ router.post("/login",async (req,res)=>{
 });
 
 router.post("/logout",(req,res)=>{
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
 
     return res.status(200).json({
         message:"User logged out successfully"
     });
+});
+
+router.get("/me", commonMiddleware, async (req, res) => {
+    const user = await Model.findById(req.user.id).select("-password");
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ user });
 });
 
 export default router;
