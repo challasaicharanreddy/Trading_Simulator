@@ -1,5 +1,5 @@
 import {Server} from "socket.io"
-import jwt from "jsonwebtoken"
+import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
 let io;
 function SocketInit(httpServer){
     io=new Server(httpServer,{
@@ -9,20 +9,7 @@ function SocketInit(httpServer){
         },
     });
 
-    io.use((socket,next)=>{
-        const token=socket.handshake.headers?.token;
-        if(!token){
-            return next(new Error("Authentication token is missing"));
-        }
-
-        try{
-            const decoded=jwt.verify(token, process.env.JWT_SECRET);
-            socket.userId=decoded.id;
-            next();
-        }catch(err){
-            next(new Error("Invalid or expired Token"));
-        }
-    });
+    io.use(socketAuthMiddleware);
 
     io.on("connection",(socket)=>{
         console.log(`Socket connected: user ${socket.userId}, socket ${socket.id}`);

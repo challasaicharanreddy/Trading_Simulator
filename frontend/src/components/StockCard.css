@@ -1,0 +1,46 @@
+.stock-card {
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    min-width: 140px;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .stock-card--flash {
+    background-color: #d4f4dd;
+  }
+  
+  .stock-card__symbol {
+    font-weight: 600;
+    font-size: 14px;
+    color: #666666;
+    letter-spacing: 0.3px;
+  }
+  
+  .stock-card__price {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 4px;
+    color: #1a1a1a;
+  }
+  
+  .stock-card__change {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  
+  .stock-card__change.positive {
+    color: #16a34a;
+  }
+  
+  .stock-card__change.negative {
+    color: #dc2626;
+  }
+  
+  .stock-card__loading {
+    color: #999999;
+    font-size: 13px;
+    margin-top: 4px;
+  }
