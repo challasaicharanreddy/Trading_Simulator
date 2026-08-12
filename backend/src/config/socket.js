@@ -1,5 +1,9 @@
 import {Server} from "socket.io"
 import jwt from "jsonwebtoken"
+import RedisClient from "./redis.js";
+
+const subclient=RedisClient;
+await subclient.subscribe("price_change");
 let io;
 function SocketInit(httpServer){
     io=new Server(httpServer,{
@@ -7,21 +11,6 @@ function SocketInit(httpServer){
             origin: process.env.CLIENT_URL || "http://localhost:5173",
             credentials:true,
         },
-    });
-
-    io.use((socket,next)=>{
-        const token=socket.handshake.headers?.token;
-        if(!token){
-            return next(new Error("Authentication token is missing"));
-        }
-
-        try{
-            const decoded=jwt.verify(token, process.env.JWT_SECRET);
-            socket.userId=decoded.id;
-            next();
-        }catch(err){
-            next(new Error("Invalid or expired Token"));
-        }
     });
 
     io.on("connection",(socket)=>{
@@ -39,6 +28,11 @@ function SocketInit(httpServer){
         socket.on("disconnect",()=>{
             console.log(`Socket disconnected: user ${socket.userId}`);
         });
+    });
+
+    subclient.on("message",(channel,message)=>{
+        const msg=JSON.parse(message);
+        io.to(`room:${msg.symbol}`).emit("priceChange",msg);
     });
 
     return io;

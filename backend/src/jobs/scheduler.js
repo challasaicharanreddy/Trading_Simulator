@@ -21,11 +21,7 @@ async function scheduler() {
                     close:data.price
                 });
 
-                await RedisClient.publish("price_change",JSON.stringify({
-                    "symbol":stock,
-                    "curr_price":data.price,
-                    "time":Date.now()
-                }));
+                await RedisClient.publish("price_change",JSON.stringify(data));
 
             }catch(err) {
                 console.error(err);
