@@ -1,5 +1,11 @@
 import {Server} from "socket.io"
+import jwt from "jsonwebtoken"
+import RedisClient from "./redis.js";
 import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
+
+const subclient=RedisClient;
+await subclient.subscribe("price_change");
+
 let io;
 function SocketInit(httpServer){
     io=new Server(httpServer,{
@@ -26,6 +32,11 @@ function SocketInit(httpServer){
         socket.on("disconnect",()=>{
             console.log(`Socket disconnected: user ${socket.userId}`);
         });
+    });
+
+    subclient.on("message",(channel,message)=>{
+        const msg=JSON.parse(message);
+        io.to(`room:${msg.symbol}`).emit("priceChange",msg);
     });
 
     return io;
