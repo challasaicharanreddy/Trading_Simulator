@@ -1,9 +1,11 @@
 import {Server} from "socket.io"
 import jwt from "jsonwebtoken"
 import RedisClient from "./redis.js";
+import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
 
 const subclient=RedisClient;
 await subclient.subscribe("price_change");
+
 let io;
 function SocketInit(httpServer){
     io=new Server(httpServer,{
@@ -12,6 +14,8 @@ function SocketInit(httpServer){
             credentials:true,
         },
     });
+
+    io.use(socketAuthMiddleware);
 
     io.on("connection",(socket)=>{
         console.log(`Socket connected: user ${socket.userId}, socket ${socket.id}`);
