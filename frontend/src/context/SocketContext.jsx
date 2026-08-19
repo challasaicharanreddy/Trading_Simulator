@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { useAuth } from "./AuthContext"; // adjust to match your friend's actual export
+import { useAuth } from "./AuthContext";
 
 const SocketContext = createContext(null);
 
 export function SocketProvider({ children }) {
-  const { accessToken } = useAuth();
+  const { isLoggedIn } = useAuth();
   const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!isLoggedIn) return;
 
     const socket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
         withCredentials: true,
@@ -26,7 +26,7 @@ export function SocketProvider({ children }) {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [accessToken]);
+  }, [isLoggedIn]);
 
   return (
     <SocketContext.Provider value={{ socket: socketRef.current, isConnected }}>

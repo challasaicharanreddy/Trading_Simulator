@@ -12,6 +12,17 @@ async function scheduler() {
     setInterval(async () => {
         for(const stock of symbols) {
             const data=await fetchWithCache(stock);
+            const mod_data={
+                symbol:stock,
+                open:data.open,
+                high:data.high,
+                low:data.low,
+                close:data.price,
+                previousClose:data.previousClose,
+                change:data.change,
+                changePercent:data.changePercent,
+                timestamp:data.timestamp
+            }
             try {
                 const update_in_db=await Model.create({
                     symbol:stock,
@@ -21,7 +32,7 @@ async function scheduler() {
                     close:data.price
                 });
 
-                await RedisClient.publish("price_change",JSON.stringify(data));
+                await RedisClient.publish("price_change",JSON.stringify(mod_data));
 
             }catch(err) {
                 console.error(err);

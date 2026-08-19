@@ -23,22 +23,8 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function login(email, password) {
-    await axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true });
-    await checkAuth();
-  }
-
-  async function register(username, email, password) {
-    return axios.post(`${API_URL}/auth/register`, { username, email, password }, { withCredentials: true });
-  }
-
-  async function logout() {
-    await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
-    setUser(null);
-  }
-
   return (
-    <AuthContext.Provider value={{ user, isLoading, isLoggedIn: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, isLoggedIn: !!user, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

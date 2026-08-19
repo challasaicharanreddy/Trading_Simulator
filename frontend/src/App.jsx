@@ -3,9 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { setupInterceptors } from "./api/axiosInstance";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import AuthPage from "./pages/AuthPage";
+import StockPage from "./pages/Stockpage";
 import "./App.css";
 
 function App() {
@@ -21,17 +20,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/stock/:symbol" element={<StockPage/>} />
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/register" element={<AuthPage />} />
     </Routes>
   );
 }
