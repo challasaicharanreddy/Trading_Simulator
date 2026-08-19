@@ -5,10 +5,10 @@ const candleSchema=new mongoose.Schema({
         type: String,
         required: true
     },
-    interval:{
-        type:String,
-        default:"1MIN"
-    },
+    // interval:{
+    //     type:String,
+    //     default:"1MIN"
+    // },
     open: {
         type: Number,
         required: true

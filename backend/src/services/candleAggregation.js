@@ -1,5 +1,6 @@
 import MarketData from "../models/marketData.js";
 import MinuteCandles from "../models/MinuteCandles.js";
+import RedisClient from "../config/redis.js";
 
 const Model1=MarketData;
 const Model2=MinuteCandles;
@@ -36,16 +37,18 @@ export default async function(stock) {
     const close = snapshots[snapshots.length - 1].close; 
     const high = Math.max(...snapshots.map(s => s.close));
     const low = Math.min(...snapshots.map(s => s.close));
-
-    try{
-        await Model2.create({
+    const data={
             symbol:stock,
             open:open,
             high:high,
             low:low,
             close:close,
             timestamp: start
-        })
+        }
+
+    try{
+        await RedisClient.publish("new_minute_aggregation",JSON.stringify(data));
+        await Model2.create(data)
         console.log("Fetched for this min and stored in mongoDB");
     }catch(err) {
         console.log("Error in adding to minutecandles"+" "+err);

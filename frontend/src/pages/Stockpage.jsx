@@ -1,0 +1,488 @@
+import { useEffect, useRef, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  ArrowLeft,
+  TrendingUp,
+  TrendingDown,
+  Activity,
+  Wifi,
+  CandlestickChart,
+} from "lucide-react"
+import { createChart,CandlestickSeries } from 'lightweight-charts';
+import axios from "axios";
+import { useSocket } from "../context/SocketContext";
+
+
+// ---- Static dummy data --------------------------------------------------
+// Replace with data from your Axios calls / Socket.IO stream.
+
+const TIMEFRAMES = [
+  { id: "1h", label: "1 Hour" },
+//   { id: "1d", label: "1 Day" },
+]
+
+// ---- Formatting helpers -------------------------------------------------
+
+const fmtMoney = (n) =>
+  n.toLocaleString("en-US", { style: "currency", currency: "USD" })
+
+const fmtNum = (n) => n.toLocaleString("en-US")
+
+// ---- Small reusable UI pieces -------------------------------------------
+
+function StatRow({ label, value, tone = "default" }) {
+  const toneClass =
+    tone === "gain"
+      ? "text-gain"
+      : tone === "loss"
+        ? "text-loss"
+        : "text-foreground"
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-border/60 py-2.5 last:border-b-0">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className={`font-mono text-sm font-medium tabular-nums ${toneClass}`}>
+        {value}
+      </span>
+    </div>
+  )
+}
+
+function OhlcCell({ label, value, tone = "default" }) {
+  const toneClass =
+    tone === "gain"
+      ? "text-gain"
+      : tone === "loss"
+        ? "text-loss"
+        : "text-foreground"
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      <span className={`font-mono text-sm font-semibold tabular-nums ${toneClass}`}>
+        {value}
+      </span>
+    </div>
+  )
+}
+
+function Panel({ title, icon: Icon, children, className = "" }) {
+  return (
+    <section
+      className={`rounded-xl border border-border bg-card p-4 sm:p-5 ${className}`}
+    >
+      {title && (
+        <header className="mb-3 flex items-center gap-2">
+          {Icon && <Icon className="size-4 text-primary" aria-hidden="true" />}
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        </header>
+      )}
+      {children}
+    </section>
+  )
+}
+
+// ---- Main page ----------------------------------------------------------
+
+export default function StockPage() {
+    const { symbol } = useParams()
+    const {socket,isConnected}=useSocket();
+    const chartref=useRef(null);
+    const chartInstanceRef = useRef(null);
+    const candleSeriesRef = useRef(null);
+    const [data,setdata]=useState([]);
+    const [realtimedata,setrealtimedata]=useState({});
+    const [holdings,setholdings]=useState({});
+    const [transaction,settransaction]=useState(false);
+    const [cursordata,setcursordata]=useState({})
+    const STOCK_NAMES = {
+        AAPL: "Apple Inc.",
+        MSFT: "Microsoft Corporation",
+        TSLA: "Tesla Inc.",
+        TITN: "Titan Company Limited",
+        NVDA: "NVIDIA Corporation",
+        AMZN: "Amazon.com Inc.",
+        GOOGL: "Alphabet Inc.",
+        META: "Meta Platforms Inc."
+    };
+    const stock = {
+        symbol: symbol?.toUpperCase() || "",
+        name: STOCK_NAMES[symbol?.toUpperCase()] || "",
+
+        price: realtimedata?.close ?? 0,
+        change: realtimedata?.change ?? 0,
+        changePercent: realtimedata?.changePercent ?? 0,
+
+        ohlc: {
+            open: realtimedata?.open ?? 0,
+            high: realtimedata?.high ?? 0,
+            low: realtimedata?.low ?? 0,
+            close: realtimedata?.close ?? 0
+        },
+
+        market: {
+            open: realtimedata?.open ?? 0,
+            prevClose: realtimedata?.previousClose ?? 0
+        },
+
+        position: {
+            quantity: holdings?.quantity ?? 0,
+            avgCost: holdings?.avgCost ?? 0
+        }
+    };
+    useEffect(()=>{
+        if(!symbol || !isConnected) return;
+        socket.emit("subscribe",symbol);
+
+        const addAggregation=(d)=>{
+            console.log("inside add aggregation")
+            const new_data={
+                time: Math.floor(new Date(d.timestamp).getTime() / 1000),
+                open: d.open,
+                high: d.high,
+                low: d.low,
+                close: d.close
+            };
+            candleSeriesRef.current?.update(new_data);
+        }
+        const updateRealTimeData=(d)=>{
+          console.log("inside updreal time")
+            setrealtimedata(d);
+        }
+        socket.on("new_minute_aggregation",addAggregation);
+        socket.on("priceChange",updateRealTimeData);
+
+        return ()=>{
+            socket.emit("unsubscribe",symbol);
+        }
+    },[symbol,socket,isConnected]);
+    useEffect(()=>{
+        const call=async ()=>{
+            const result=await axios.post("http://localhost:5000/app/fetchprice/minuteCandles",{symbol:symbol,timeperiod:"1h"},{withCredentials:true});
+            const resultagain=await axios.post("http://localhost:5000/app/fetchprice/holdings",{symbol:symbol},{withCredentials:true})
+            const formattedData = result.data.map((item) => ({
+                time: Math.floor(new Date(item.timestamp).getTime() / 1000),
+                open: item.open,
+                high: item.high,
+                low: item.low,
+                close: item.close
+            }));
+            const cleanedData={
+                quantity: resultagain.data?.quantity ?? 0,
+                avgCost: resultagain.data?.avgCostPrice ?? 0
+            }
+            setholdings(cleanedData);
+            setdata(formattedData);
+            console.log(formattedData)
+            setrealtimedata(result.data[result.data.length-1]);
+        }
+        call()
+    },[]);
+    useEffect(()=>{
+        const chartOptions = {
+            width: chartref.current.clientWidth,
+            height: chartref.current.clientHeight,
+
+            timeScale: {
+                timeVisible: true,
+                secondsVisible: false,
+            },
+
+            grid: {
+                vertLines: {
+                    color: "rgba(255, 255, 255, 0.05)",
+                },
+                horzLines: {
+                    color: "rgba(255, 255, 255, 0.05)",
+                },
+            },
+
+            layout: {
+                textColor: "#94a3b8",
+                background: {
+                    type: "solid",
+                    color: "#13171e",
+                },
+            },
+        };
+        const chart = createChart(chartref.current, chartOptions);
+        const candlestickSeries = chart.addSeries(CandlestickSeries, { upColor: '#35c26d', downColor: '#f1424e', borderVisible: false, wickUpColor: '#35c26d', wickDownColor: '#f1424e' });
+
+
+        candlestickSeries.setData(data);
+
+        chartInstanceRef.current = chart;
+      candleSeriesRef.current = candlestickSeries
+
+        chart.subscribeCrosshairMove((param) => {
+            if (!param.time) return;
+
+            const candleData = param.seriesData.get(candlestickSeries);
+            setcursordata(candleData);
+
+        });
+
+        chart.timeScale().fitContent();
+
+        return () => {
+            chart.remove();
+            chartInstanceRef.current = null;
+          candleSeriesRef.current = null;
+        };
+    },[])
+
+    useEffect(() => {
+    if (!candleSeriesRef.current) return;
+    if (data.length === 0) return;
+
+    candleSeriesRef.current.setData(data);
+
+    chartInstanceRef.current?.timeScale().fitContent();
+    }, [data]);
+
+  const navigate = useNavigate()
+
+  const [timeframe, setTimeframe] = useState("1d")
+  const [quantity, setQuantity] = useState(1)
+
+
+  const isUp = stock.changePercent >= 0
+  const changeTone = isUp ? "gain" : "loss"
+  const ChangeIcon = isUp ? TrendingUp : TrendingDown
+
+  const qty = Number.isFinite(quantity) && quantity > 0 ? quantity : 0
+  const estimatedCost = qty * stock.price
+
+  // Position calculations
+  const { quantity: posQty, avgCost } = stock.position
+  const currentValue = posQty * stock.price
+  const costBasis = posQty * avgCost
+  const unrealizedPnl = currentValue - costBasis
+  const unrealizedPnlPct = (unrealizedPnl / costBasis) * 100
+  const positionUp = unrealizedPnl >= 0
+
+  return (
+    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-5 sm:px-6 lg:py-8">
+      {/* Top bar */}
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard")}
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          <span>Markets</span>
+        </button>
+
+        <div className="inline-flex items-center gap-2 rounded-full border border-gain/30 bg-gain/10 px-3 py-1.5">
+          <span className="relative flex size-2">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-gain opacity-75" />
+            <span className="relative inline-flex size-2 rounded-full bg-gain" />
+          </span>
+          <span className="text-xs font-medium text-gain">Live</span>
+          <Wifi className="size-3.5 text-gain" aria-hidden="true" />
+        </div>
+      </div>
+
+      {/* Identity + price */}
+      <header className="mb-5 flex flex-col gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-mono text-3xl font-bold tracking-tight text-foreground">
+              {stock.symbol}
+            </h1>
+            <span className="rounded-md border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+              NASDAQ
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">{stock.name}</p>
+        </div>
+
+        <div className="flex flex-col gap-1 sm:items-end">
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-4xl font-bold tabular-nums text-foreground">
+              {fmtMoney(stock.price)}
+            </span>
+          </div>
+          <div
+            className={`inline-flex items-center gap-1.5 font-mono text-sm font-semibold tabular-nums ${
+              isUp ? "text-gain" : "text-loss"
+            }`}
+          >
+            <ChangeIcon className="size-4" aria-hidden="true" />
+            <span>
+              {isUp ? "+" : ""}
+              {stock.change}
+            </span>
+            <span>
+              ({isUp ? "+" : ""}
+              {stock.changePercent}%)
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* Chart + trade layout */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        {/* Chart column */}
+        <div className="flex flex-col gap-5 lg:col-span-2">
+          <Panel className="!p-0 overflow-hidden">
+            {/* Chart header: OHLC + timeframe */}
+            <div className="flex flex-col gap-4 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="grid grid-cols-4 gap-4">
+                <OhlcCell label="Open" value={fmtNum(cursordata.open || stock.ohlc.open)} />
+                <OhlcCell label="High" value={fmtNum(cursordata.high || stock.ohlc.high)} tone="gain" />
+                <OhlcCell label="Low" value={fmtNum(cursordata.low || stock.ohlc.low)} tone="loss" />
+                <OhlcCell
+                  label="Close"
+                  value={fmtNum(cursordata.close || stock.ohlc.close)}
+                  tone={changeTone}
+                />
+              </div>
+
+              <div className="flex items-center gap-1 rounded-lg border border-border bg-secondary/50 p-1">
+                {TIMEFRAMES.map((tf) => (
+                  <button
+                    key={tf.id}
+                    type="button"
+                    onClick={() => setTimeframe(tf.id)}
+                    className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      timeframe === tf.id
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    aria-pressed={timeframe === tf.id}
+                  >
+                    {tf.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Candlestick chart placeholder */}
+            <div ref={chartref}
+              id="tv-lightweight-chart"
+              className="relative w-full h-[320px] bg-[linear-gradient(to_right,color-mix(in_oklab,var(--border)_40%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--border)_40%,transparent)_1px,transparent_1px)] bg-[size:44px_44px] sm:h-[420px]"
+              role="img"
+            >
+              <span className="absolute bottom-3 right-4 font-mono text-[11px] uppercase tracking-wide text-muted-foreground/60">
+                {timeframe === "1h" ? "1 Hour" : "1 Day"} · {stock.symbol}
+              </span>
+            </div>
+          </Panel>
+
+          {/* Market details */}
+          <Panel title="Market Details" icon={Activity}>
+            <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+              <StatRow label="Open" value={fmtMoney(stock.market.open)} />
+              <StatRow
+                label="High"
+                value={fmtMoney(stock.ohlc.high)}
+                tone="gain"
+              />
+              <StatRow
+                label="Low"
+                value={fmtMoney(stock.ohlc.low)}
+                tone="loss"
+              />
+              <StatRow
+                label="Previous Close"
+                value={fmtMoney(stock.market.prevClose)}
+              />
+            </div>
+          </Panel>
+        </div>
+
+        {/* Sidebar: position + trade */}
+        <div className="flex flex-col gap-5">
+          {/* Your Position */}
+          <Panel title="Your Position" icon={TrendingUp}>
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Status</span>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  positionUp ? "bg-gain/15 text-gain" : "bg-loss/15 text-loss"
+                }`}
+              >
+                {positionUp ? "In Profit" : "At Loss"}
+              </span>
+            </div>
+            <StatRow label="Quantity" value={`${posQty} shares`} />
+            <StatRow label="Average Cost" value={fmtMoney(avgCost)} />
+            <StatRow label="Current Value" value={fmtMoney(currentValue)} />
+            <StatRow
+              label="Unrealized P/L"
+              value={`${unrealizedPnl >= 0 ? "+" : ""}${fmtMoney(
+                unrealizedPnl,
+              )} (${unrealizedPnl >= 0 ? "+" : ""}${unrealizedPnlPct.toFixed(
+                2,
+              )}%)`}
+              tone={positionUp ? "gain" : "loss"}
+            />
+          </Panel>
+
+          {/* Trade */}
+          <Panel title="Trade" icon={CandlestickChart}>
+            <label
+              htmlFor="quantity"
+              className="mb-1.5 block text-xs font-medium text-muted-foreground"
+            >
+              Quantity
+            </label>
+            <input
+              id="quantity"
+              type="number"
+              min={1}
+              step={1}
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(Number.parseInt(e.target.value, 10) || 0)
+              }
+              className="mb-4 w-full rounded-lg border border-input bg-secondary/40 px-3 py-2.5 font-mono text-sm text-foreground tabular-nums outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
+            />
+
+            <div className="mb-4 flex items-center justify-between rounded-lg border border-border bg-secondary/40 px-3 py-2.5">
+              <span className="text-sm text-muted-foreground">
+                Estimated {qty > 0 ? "value" : "cost"}
+              </span>
+              <span className="font-mono text-sm font-semibold tabular-nums text-foreground">
+                {fmtMoney(estimatedCost)}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                className="rounded-lg bg-gain px-4 py-2.5 text-sm font-semibold text-gain-foreground transition-opacity hover:opacity-90"
+              >
+                Buy
+              </button>
+              <button
+                type="button"
+                className="rounded-lg bg-loss px-4 py-2.5 text-sm font-semibold text-loss-foreground transition-opacity hover:opacity-90"
+              >
+                Sell
+              </button>
+            </div>
+          </Panel>
+
+          {/* Connection status */}
+          <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-gain opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-gain" />
+              </span>
+              <span className="text-xs font-medium text-foreground">
+                Market data connected
+              </span>
+            </div>
+            <span className="font-mono text-[11px] text-muted-foreground">
+              Real-time
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}

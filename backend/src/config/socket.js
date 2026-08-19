@@ -5,6 +5,7 @@ import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
 
 const subclient=RedisClient;
 await subclient.subscribe("price_change");
+await subclient.subscribe("new_minute_aggregation");
 
 let io;
 function SocketInit(httpServer){
@@ -35,8 +36,14 @@ function SocketInit(httpServer){
     });
 
     subclient.on("message",(channel,message)=>{
-        const msg=JSON.parse(message);
-        io.to(`room:${msg.symbol}`).emit("priceChange",msg);
+        if(channel=="price_change") {
+            const msg=JSON.parse(message);
+            console.log(msg)
+            io.to(`room:${msg.symbol}`).emit("priceChange",msg);
+        }else if(channel=="new_minute_aggregation") {
+            const msg=JSON.parse(message)
+            io.to(`room:${msg.symbol}`).emit("new_minute_aggregation",msg);
+        }
     });
 
     return io;
