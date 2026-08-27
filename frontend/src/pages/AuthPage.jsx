@@ -96,7 +96,7 @@ export default function AuthPage() {
             if(reply.status==200) {
                 await checkAuth()
                 messageref.current.textContent=reply.data.message;
-                navigate("/stock/AAPL");
+                navigate("/");
             }
         }catch(error) {
             messageref.current.textContent="Invalid Credentials Brooo...Please recheck!!"

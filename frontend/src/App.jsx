@@ -5,6 +5,7 @@ import { setupInterceptors } from "./api/axiosInstance";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthPage from "./pages/AuthPage";
 import StockPage from "./pages/Stockpage";
+import PortfolioPage from "./pages/Portfolio";
 import "./App.css";
 
 function App() {
@@ -20,10 +21,27 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/stock/:symbol" element={<StockPage/>} />
+      <Route path="/" element={
+        <ProtectedRoute>
+        <Navigate to="/dashboard" replace />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/stocks/:symbol" element={
+        <ProtectedRoute>
+        <StockPage/>
+        </ProtectedRoute>
+      } />
+
       <Route path="/login" element={<AuthPage />} />
       <Route path="/register" element={<AuthPage />} />
+
+      <Route path="/portfolio" element={
+        <ProtectedRoute>
+        <PortfolioPage />
+        </ProtectedRoute>
+      } />
+
     </Routes>
   );
 }

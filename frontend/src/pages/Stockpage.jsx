@@ -82,6 +82,42 @@ function Panel({ title, icon: Icon, children, className = "" }) {
   )
 }
 
+function MarketStatus() {
+    const now = new Date();
+
+    const nyTime = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }).format(now);
+    console.log(nyTime)
+    const [hour, minute] = nyTime.split(":").map(Number);
+
+    const isOpen =
+        (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+  return (
+    <div
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
+        isOpen
+          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+          : "border-red-500/30 bg-red-500/10 text-red-300"
+      }`}
+    >
+      <span
+        className={`size-2 rounded-full ${
+          isOpen
+            ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
+            : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
+        }`}
+      />
+
+      {isOpen ? "Market Open" : "Market Closed"}
+      <Wifi className={`size-3.5 ${isOpen?"text-gain":"text-loss"}`} aria-hidden="true" />
+    </div>
+  );
+}
+
 // ---- Main page ----------------------------------------------------------
 
 export default function StockPage() {
@@ -238,12 +274,38 @@ export default function StockPage() {
     candleSeriesRef.current.setData(data);
 
     chartInstanceRef.current?.timeScale().fitContent();
-    }, [data]);
+  } , [data]);
+
+  const executeBuy=async ()=>{
+    try{
+      const res=await axios.post("http://localhost:5000/app/api/orders/buy",{symbol:symbol,quantity:quantity},{withCredentials:true})
+      if(res) {
+        setmessage("Transaction Successful")
+      }
+    }catch(error) {
+      if (error.response?.status === 410) {
+        setmessage("Market Closed. Please Come again later");
+      }
+    }
+  }
+  const executeSell=async ()=>{
+    try{
+      const res=await axios.post("http://localhost:5000/app/api/orders/sell",{symbol:symbol,quantity:quantity},{withCredentials:true})
+      if(res) {
+        setmessage("Transaction Successful")
+      }
+    }catch(error) {
+      if (error.response?.status === 410) {
+        setmessage("Market Closed. Please Come again later");
+      }
+    }
+  }
 
   const navigate = useNavigate()
 
   const [timeframe, setTimeframe] = useState("1d")
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(1);
+  const [message,setmessage]=useState("");
 
 
   const isUp = stock.changePercent >= 0
@@ -274,13 +336,8 @@ export default function StockPage() {
           <span>Markets</span>
         </button>
 
-        <div className="inline-flex items-center gap-2 rounded-full border border-gain/30 bg-gain/10 px-3 py-1.5">
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-gain opacity-75" />
-            <span className="relative inline-flex size-2 rounded-full bg-gain" />
-          </span>
-          <span className="text-xs font-medium text-gain">Live</span>
-          <Wifi className="size-3.5 text-gain" aria-hidden="true" />
+        <div>
+          <span>{MarketStatus()}</span>
         </div>
       </div>
 
@@ -452,12 +509,14 @@ export default function StockPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <button
+                onClick={executeBuy}
                 type="button"
                 className="rounded-lg bg-gain px-4 py-2.5 text-sm font-semibold text-gain-foreground transition-opacity hover:opacity-90"
               >
                 Buy
               </button>
               <button
+                onClick={executeSell}
                 type="button"
                 className="rounded-lg bg-loss px-4 py-2.5 text-sm font-semibold text-loss-foreground transition-opacity hover:opacity-90"
               >
@@ -465,6 +524,14 @@ export default function StockPage() {
               </button>
             </div>
           </Panel>
+
+          <div className={`${message===""?"hidden":""} flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3`}>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-foreground">
+                {message}
+              </span>
+            </div>
+          </div>
 
           {/* Connection status */}
           <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
@@ -481,6 +548,7 @@ export default function StockPage() {
               Real-time
             </span>
           </div>
+          
         </div>
       </div>
     </main>

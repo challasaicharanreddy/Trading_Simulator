@@ -77,6 +77,7 @@ router.post("/login",async (req,res)=>{
 });
 
 router.post("/logout",(req,res)=>{
+    console.log("req hit");
     res.clearCookie("accessToken");
 
     return res.status(200).json({
