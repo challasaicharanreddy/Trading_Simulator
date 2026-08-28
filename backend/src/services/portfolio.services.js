@@ -15,6 +15,7 @@ const getdetails=async (holdings)=>{
             pnl:{}
         }
     }
+    const curr_holding_stats={};
     let totalValue=0;
     const PnL={};
     const currentPrices={};
@@ -28,11 +29,24 @@ const getdetails=async (holdings)=>{
         totalValue+=curr_price*quantity;
         PnL[holding.symbol]=pnl;
         currentPrices[holding.symbol]=curr_price;
+
+
+        const curr_value = curr_price * quantity;
+        const pnl_percent =
+            (pnl / (average_price * quantity)) * 100;
+
+        curr_holding_stats[holding.symbol] = {
+            quantity,
+            avg_buy_price: average_price,
+            curr_price,
+            curr_value,
+            pnl,
+            pnl_percent,
+        };
     }
 
     return {
-        totalValue:totalValue,
-        currentPrices:currentPrices,
+        curr_holding_stats,
         pnl:PnL
     };
 }

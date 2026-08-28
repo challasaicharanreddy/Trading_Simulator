@@ -16,10 +16,10 @@ router.get("/",async(req,res)=>{
     const cashBalance=user_portfolio.cashBalance;
     const details=await getdetails(user_holdings);
 
+
     return res.json({
         cashBalance:cashBalance,
-        totalValue:cashBalance+details.totalValue,
-        holdings:details.currentPrices
+        holdings:details.curr_holding_stats
     })
 
 });

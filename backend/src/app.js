@@ -8,6 +8,7 @@ import ordersRoutes from "./routes/orders.routes.js";
 import strategyRoutes from "./routes/strategy.routes.js";
 import portfolioRoutes from "./routes/portfolio.routes.js";
 import backtestRoutes from "./routes/backtest.routes.js";
+import fetchStockPriceRoutes from "./routes/fetchStockPrice.routes.js"
 
 const app=express();
 
@@ -25,6 +26,7 @@ app.use("/app/api/orders", ordersRoutes);
 app.use("/app/api/strategies", strategyRoutes);
 app.use("/app/portfolio",portfolioRoutes);
 app.use("/app/backtest",backtestRoutes)
+app.use("/app/fetchprice",fetchStockPriceRoutes);
 app.get("/app/api/health",(req,res)=>{
     res.json({status:"ok"});
 });

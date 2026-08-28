@@ -9,7 +9,6 @@ const Model=users;
 const router=express.Router()
 
 router.post("/register",async (req,res)=>{
-    console.log(req)
     const info=req.body;
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -33,7 +32,7 @@ router.post("/register",async (req,res)=>{
         cashBalance: 1000000, 
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
         message:"User registered succcessfully. Please log in"
     });
 });
@@ -72,12 +71,13 @@ router.post("/login",async (req,res)=>{
         maxAge: 24 * 60 * 60 * 1000
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
         message:"User logged in succesfully"
     });
 });
 
 router.post("/logout",(req,res)=>{
+    console.log("req hit");
     res.clearCookie("accessToken");
 
     return res.status(200).json({

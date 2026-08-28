@@ -1,7 +1,6 @@
 import express from "express";
 const router=express.Router();
 import { fetchWithCache} from "../services/marketData.js";
-console.log('market.routes.js loaded');
 router.get('/quote/:symbol', async(req,res)=>{
     console.log('Route hit! symbol =', req.params.symbol);
     try{

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import {
   Activity,
   BarChart3,
@@ -8,9 +8,11 @@ import {
   Settings,
   TrendingUp,
   X,
+  LogOut,
 } from "lucide-react";
+import axios from "axios";
 
-function Sidebar({ open, onClose }) {
+function Sidebar({ open, onClose}) {
   const nav = [
     ["Dashboard", LayoutDashboard, "/"],
     ["Portfolio", PieChart, "/"],
@@ -19,6 +21,18 @@ function Sidebar({ open, onClose }) {
     ["Strategies", Settings, "/"],
     ["Backtesting", BarChart3, "/"],
   ];
+  const navigate=useNavigate();
+
+  const handleLogout=async ()=>{
+    try{
+        const res=await axios.post("http://localhost:5000/auth/logout",{},{withCredentials:true});
+        if(res) {
+            navigate("/login");
+        }
+    }catch(error) {
+        console.log(error);
+    }
+  }
 
   return (
     <aside
@@ -62,22 +76,32 @@ function Sidebar({ open, onClose }) {
         ))}
       </nav>
 
-      <div className="mt-auto rounded-md border border-[#1d2e4e] bg-[#101a2e] p-2">
-        <div className="flex items-center gap-2">
-          <div className="grid size-7 place-items-center rounded bg-[#294465] text-xs font-bold text-white">
-            AM
-          </div>
+      <div className="mt-auto">
+        <div className="rounded-md border border-[#1d2e4e] bg-[#101a2e] p-2">
+          <div className="flex items-center gap-2">
+            <div className="grid size-7 place-items-center rounded bg-[#294465] text-xs font-bold text-white">
+              AM
+            </div>
 
-          <div>
-            <p className="text-sm font-semibold text-white">
-              Alex Mercer
-            </p>
+            <div>
+              <p className="text-sm font-semibold text-white">
+                Alex Mercer
+              </p>
 
-            <p className="text-xs text-[#6f819e]">
-              Terminal ID: #8204
-            </p>
+              <p className="text-xs text-[#6f819e]">
+                Terminal ID: #8204
+              </p>
+            </div>
           </div>
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="mt-3 flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-[#70819f] hover:bg-red-500/10 hover:text-red-400"
+        >
+          <LogOut size={15} />
+          Logout
+        </button>
       </div>
     </aside>
   );

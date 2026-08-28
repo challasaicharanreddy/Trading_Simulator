@@ -3,10 +3,30 @@ import express from "express";
 import { executeBuyOrder, executeSellOrder } from "../services/orderEngine.js";
 import { fetchWithCache } from "../services/marketData.js";
 
+function MarketStatus() {
+    const now = new Date();
+
+    const nyTime = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }).format(now);
+    const [hour, minute] = nyTime.split(":").map(Number);
+
+    const isOpen =
+        (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+
+  return isOpen;
+}
+
 const router = express.Router();
 
 router.post("/buy",async (req, res) => {
   try {
+    if(!MarketStatus()) {
+      return res.status(410).json({ error: "Market Closed, Please come back later" });
+    }
     const { symbol, quantity } = req.body;
     const userId = req.user.id; 
     const data=await fetchWithCache(symbol);
@@ -25,6 +45,9 @@ router.post("/buy",async (req, res) => {
 
 router.post("/sell", async (req, res) => {
   try {
+    if(!MarketStatus()) {
+      return res.status(410).json({ error: "Market Closed, Please come back later" });
+    }
     const { symbol, quantity } = req.body;
     const userId = req.user.id;
     const price=await fetchWithCache(symbol);

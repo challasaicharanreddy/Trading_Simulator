@@ -12,6 +12,17 @@ async function runPriceTick() {
     for(const stock of symbols) {
         try {
             const data = await fetchWithCache(stock);
+            const mod_data={
+                symbol:stock,
+                open:data.open,
+                high:data.high,
+                low:data.low,
+                close:data.price,
+                previousClose:data.previousClose,
+                change:data.change,
+                changePercent:data.changePercent,
+                timestamp:data.timestamp
+            }
             await Model.create({
                 symbol: stock,
                 open: data.open,
@@ -20,7 +31,7 @@ async function runPriceTick() {
                 close: data.price
             });
 
-            await RedisClient.publish("price_change", JSON.stringify(data));
+            await RedisClient.publish("price_change", JSON.stringify(mod_data));
             console.log(`[Scheduler] Published price update for ${stock}: $${data.price}`);
         } catch(err) {
             console.error(`[Scheduler Error ${stock}]:`, err.message);
