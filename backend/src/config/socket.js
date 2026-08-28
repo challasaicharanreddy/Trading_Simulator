@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import RedisClient from "./redis.js";
 import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
 
-const subclient=RedisClient;
+const subclient = RedisClient.duplicate();
 await subclient.subscribe("price_change");
 await subclient.subscribe("new_minute_aggregation");
 

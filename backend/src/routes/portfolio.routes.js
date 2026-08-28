@@ -1,6 +1,7 @@
 import express from "express";
 import portfolio from "../models/portfolio.js";
 import holdings from "../models/holdings.js";
+import PortfolioSnapshot from "../models/portfolioSnapshot.js";
 import { getdetails,getTradeHistory } from "../services/portfolio.services.js";
 
 const router=express.Router();
@@ -37,5 +38,30 @@ router.get("/pnl",async(req,res)=>{
 
     return res.json(details.pnl);
 })
+
+router.get("/history", async (req, res) => {
+  console.log('ROUTE HIT')
+    try {
+      const userId = req.user.id;
+  
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      sevenDaysAgo.setHours(0, 0, 0, 0);
+  
+      const snapshots = await PortfolioSnapshot
+        .find({ user: userId, date: { $gte: sevenDaysAgo } })
+        .sort({ date: 1 })
+        .lean();
+  
+      const chartData = snapshots.map((s) => ({
+        date: s.date.toISOString().split("T")[0], // "2026-08-11" format for chart labels
+        value: s.portfolioValue,
+      }));
+  
+      res.json(chartData);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
 export default router

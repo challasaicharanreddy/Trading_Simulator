@@ -5,31 +5,42 @@ import { useAuth } from "./AuthContext";
 const SocketContext = createContext(null);
 
 export function SocketProvider({ children }) {
-  const { isLoggedIn } = useAuth();
-  const socketRef = useRef(null);
+  const { user, isLoading } = useAuth();
+  const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (isLoading) return;
 
-    const socket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
-        withCredentials: true,
+    const newSocket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
+      withCredentials: true,
     });
 
-    socket.on("connect", () => setIsConnected(true));
-    socket.on("disconnect", () => setIsConnected(false));
-    socket.on("connect_error", (err) => console.error("Socket error:", err.message));
+    newSocket.on("connect", () => {
+      console.log("Socket connected:", newSocket.id);
+      setIsConnected(true);
+    });
 
-    socketRef.current = socket;
+    newSocket.on("disconnect", () => {
+      console.log("Socket disconnected");
+      setIsConnected(false);
+    });
+
+    newSocket.on("connect_error", (err) => {
+      console.error("Socket connection error:", err.message);
+    });
+
+    setSocket(newSocket);
 
     return () => {
-      socket.disconnect();
-      socketRef.current = null;
+      newSocket.disconnect();
+      setSocket(null);
+      setIsConnected(false);
     };
-  }, [isLoggedIn]);
+  }, [isLoading, user]);
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, isConnected }}>
+    <SocketContext.Provider value={{ socket, isConnected }}>
       {children}
     </SocketContext.Provider>
   );
