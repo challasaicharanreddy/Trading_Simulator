@@ -16,11 +16,11 @@ function useLivePrice(symbol) {
       }
     };
 
-    socket.on("price", handlePriceUpdate);
+    socket.on("priceChange", handlePriceUpdate);
 
     return () => {
       socket.emit("unsubscribe", symbol);
-      socket.off("price", handlePriceUpdate);
+      socket.off("priceChange", handlePriceUpdate);
     };
   }, [socket, isConnected, symbol]);
 

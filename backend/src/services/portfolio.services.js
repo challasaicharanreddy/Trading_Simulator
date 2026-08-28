@@ -1,5 +1,9 @@
 import { fetchWithCache } from "./marketData.js";
+import Portfolio from "../models/portfolio.js";
+import PortfolioSnapshot from "../models/portfolioSnapshot.js";
+import Users from "../models/users.js";
 import transactions from "../models/transactions.js";
+import Holding from "../models/holdings.js";
 
 const Model=transactions;
 
@@ -39,4 +43,50 @@ const getTradeHistory=async(userid)=>{
     return transactionHistory;
 }
 
-export {getdetails,getTradeHistory}
+async function takeSnapshotForUser(userId) {
+    const portfolio = await Portfolio.findOne({ user: userId });
+    if (!portfolio) return;
+  
+    const holdings = await Holding.find({ portfolio: portfolio._id });
+  
+    let holdingsValue = 0;
+    for (const holding of holdings) {
+      const currentPrice = await fetchWithCache(holding.symbol);
+      if (currentPrice !== null) {
+        holdingsValue += holding.quantity * currentPrice.price;
+      } else {
+        holdingsValue += holding.quantity * holding.avgCostPrice;
+      }
+    }
+  
+    const totalValue = portfolio.cashBalance + holdingsValue;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    await PortfolioSnapshot.findOneAndUpdate(
+      { user: userId, date: today },
+      {
+        user: userId,
+        portfolioValue: totalValue,
+        date: today,
+      },
+      { upsert: true, returnDocument: "after" }
+    );
+  }
+  
+  async function takeSnapshotsForAllUsers() {
+    const users = await Users.find().select("_id");
+    console.log(`Taking portfolio snapshots for ${users.length} users...`);
+  
+    for (const user of users) {
+      try {
+        await takeSnapshotForUser(user._id);
+      } catch (err) {
+        console.error(`Snapshot failed for user ${user._id}:`, err.message);
+      }
+    }
+  
+    console.log("Portfolio snapshots complete.");
+  }
+
+export {getdetails,getTradeHistory,takeSnapshotsForAllUsers};

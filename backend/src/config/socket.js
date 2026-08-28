@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import RedisClient from "./redis.js";
 import socketAuthMiddleware from "../middlewares/socketAuth.middleware.js";
 
-const subclient=RedisClient;
+const subclient = RedisClient.duplicate();
 await subclient.subscribe("price_change");
 
 let io;
@@ -34,9 +34,11 @@ function SocketInit(httpServer){
         });
     });
 
-    subclient.on("message",(channel,message)=>{
-        const msg=JSON.parse(message);
-        io.to(`room:${msg.symbol}`).emit("priceChange",msg);
+    subclient.on("message", (channel, message) => {
+        const msg = JSON.parse(message);
+        console.log(`[Socket Broadcast] ${msg.symbol} -> $${msg.price}`);
+        io.to(`room:${msg.symbol}`).emit("priceChange", msg);
+        io.emit("priceChange", msg);
     });
 
     return io;

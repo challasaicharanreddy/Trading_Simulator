@@ -4,7 +4,8 @@ function socketAuthMiddleware(socket, next) {
   const cookieHeader = socket.handshake.headers?.cookie;
 
   if (!cookieHeader) {
-    return next(new Error("Authentication cookie is missing"));
+    socket.userId = "guest";
+    return next();
   }
 
   const cookies = Object.fromEntries(
@@ -17,7 +18,8 @@ function socketAuthMiddleware(socket, next) {
   const token = cookies.accessToken;
 
   if (!token) {
-    return next(new Error("Authentication token is missing"));
+    socket.userId = "guest";
+    return next();
   }
 
   try {
@@ -25,7 +27,8 @@ function socketAuthMiddleware(socket, next) {
     socket.userId = decoded.id;
     next();
   } catch (err) {
-    next(new Error("Invalid or expired token"));
+    socket.userId = "guest";
+    next();
   }
 }
 

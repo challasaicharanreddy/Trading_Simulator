@@ -8,29 +8,32 @@ const Model=marketdata;
 
 
 const symbols=["AAPL","MSFT","TSLA","TITN","NVDA","AMZN","GOOGL","META"];
-async function scheduler() {
-    setInterval(async () => {
-        for(const stock of symbols) {
-            const data=await fetchWithCache(stock);
-            try {
-                const update_in_db=await Model.create({
-                    symbol:stock,
-                    open:data.open,
-                    high:data.high,
-                    low:data.low,
-                    close:data.price
-                });
+async function runPriceTick() {
+    for(const stock of symbols) {
+        try {
+            const data = await fetchWithCache(stock);
+            await Model.create({
+                symbol: stock,
+                open: data.open,
+                high: data.high,
+                low: data.low,
+                close: data.price
+            });
 
-                await RedisClient.publish("price_change",JSON.stringify(data));
-
-            }catch(err) {
-                console.error(err);
-            }
+            await RedisClient.publish("price_change", JSON.stringify(data));
+            console.log(`[Scheduler] Published price update for ${stock}: $${data.price}`);
+        } catch(err) {
+            console.error(`[Scheduler Error ${stock}]:`, err.message);
         }
+    }
+}
 
+async function scheduler() {
+    // Run once immediately on startup
+    runPriceTick();
 
-        
-    }, 10000);
+    // Repeat every 10 seconds
+    setInterval(runPriceTick, 10000);
 
     setInterval(async() => {
         for(const stock of symbols) {

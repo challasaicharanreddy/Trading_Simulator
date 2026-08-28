@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import commonMiddleware from "./middlewares/common.middleware.js"
 import authroutes from "./routes/authroutes.js"
 import marketRoutes from "./routes/market.routes.js";
