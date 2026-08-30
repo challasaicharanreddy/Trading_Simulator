@@ -103,4 +103,25 @@ async function takeSnapshotForUser(userId) {
     console.log("Portfolio snapshots complete.");
   }
 
-export {getdetails,getTradeHistory,takeSnapshotsForAllUsers};
+  const PortfolioMetrics=async (userId)=>{
+    const portfolio=await Portfolio.findOne({user:userId});
+    const cash=portfolio.cashBalance;
+    const holdings = await Holding.find({ portfolio: portfolio._id });
+  
+    let holdingsValue = 0;
+    for (const holding of holdings) {
+      const currentPrice = await fetchWithCache(holding.symbol);
+      holdingsValue += holding.quantity * currentPrice.price;
+    }
+    const portfolioValue = cash + holdingsValue;
+    const previousSnapshot=await PortfolioSnapshot.findOne({user:userId}).sort({ date: -1 });
+    const todayPnL=portfolioValue-previousSnapshot.portfolioValue;
+    const todayPnLPercentage=(todayPnL / previousSnapshot.portfolioValue) * 100;
+    const totalPnL=portfolioValue-1000000;
+    const totalPnLPercentage=(totalPnL/1000000)*100;
+    return {
+      portfolioValue,cash,todayPnL,todayPnLPercentage,totalPnL,totalPnLPercentage
+    }
+  }
+
+export {getdetails,getTradeHistory,takeSnapshotsForAllUsers,PortfolioMetrics};

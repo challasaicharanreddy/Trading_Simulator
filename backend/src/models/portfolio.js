@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
       cashBalance: {
         type: Number,
         required: true,
-        default: 1000000,
+        default: 1000000, 
         min: 0,
       },
       createdAt: {
