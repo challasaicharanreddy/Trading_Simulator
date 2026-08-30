@@ -44,7 +44,8 @@ function SelectedStock({ stock }) {
       <div className="mt-3 h-[340px] border-y border-dashed border-[#213653] bg-[#0f1a2c] p-2">
         <MiniLineChart
           data={stock.chartData}
-          dataKey="price"
+          dataKey="time"
+          dataValue="price"
         />
       </div>
 

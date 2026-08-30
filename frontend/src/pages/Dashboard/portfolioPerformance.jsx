@@ -7,9 +7,9 @@ function PortfolioPerformanceCard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/app/portfolio/history",{},{withCredentials:true})
-      // .get("/app/portfolio/history") // matches your actual route mounting
+    axios.get("http://localhost:5000/app/portfolio/history",{withCredentials:true})
       .then((res) => {
+        console.log(res.data);
         setPortfolioPerformance(res.data);
       })
       .catch((err) => {
@@ -45,7 +45,7 @@ function PortfolioPerformanceCard() {
             No portfolio history yet
           </div>
         ) : (
-          <MiniLineChart data={portfolioPerformance} dataKey="value" />
+          <MiniLineChart data={portfolioPerformance} dataKey="date" dataValue="value" />
         )}
       </div>
 

@@ -11,8 +11,10 @@ import {
   LogOut,
 } from "lucide-react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 function Sidebar({ open, onClose}) {
+  const { user }=useAuth();
   const nav = [
     ["Dashboard", LayoutDashboard, "/"],
     ["Portfolio", PieChart, "/"],
@@ -80,16 +82,18 @@ function Sidebar({ open, onClose}) {
         <div className="rounded-md border border-[#1d2e4e] bg-[#101a2e] p-2">
           <div className="flex items-center gap-2">
             <div className="grid size-7 place-items-center rounded bg-[#294465] text-xs font-bold text-white">
-              AM
+              {
+                user.username.split(" ")[0][0]
+              }
             </div>
 
             <div>
               <p className="text-sm font-semibold text-white">
-                Alex Mercer
+                {user.username}
               </p>
 
               <p className="text-xs text-[#6f819e]">
-                Terminal ID: #8204
+                {user.email}
               </p>
             </div>
           </div>
