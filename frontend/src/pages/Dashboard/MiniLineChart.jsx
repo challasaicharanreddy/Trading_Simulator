@@ -1,42 +1,3 @@
-// function MiniLineChart({ values, className = "" }) {
-//     const points = values
-//       .map(
-//         (value, index) =>
-//           `${(index / (values.length - 1)) * 100},${92 - value}`
-//       )
-//       .join(" ");
-  
-//     return (
-//       <svg
-//         viewBox="0 0 100 100"
-//         preserveAspectRatio="none"
-//         className={`h-full w-full ${className}`}
-//         aria-hidden="true"
-//       >
-//         <defs>
-//           <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-//             <stop offset="0" stopColor="var(--primary)" stopOpacity=".15" />
-//             <stop offset="1" stopColor="var(--primary)" stopOpacity="0" />
-//           </linearGradient>
-//         </defs>
-  
-//         <polygon
-//           points={`0,100 ${points} 100,100`}
-//           fill="url(#chartFill)"
-//         />
-  
-//         <polyline
-//           points={points}
-//           fill="none"
-//           stroke="var(--primary)"
-//           strokeWidth="1.4"
-//           vectorEffect="non-scaling-stroke"
-//         />
-//       </svg>
-//     );
-//   }
-  
-//   export default MiniLineChart;
 import {
   ResponsiveContainer,
   AreaChart,
@@ -47,7 +8,8 @@ import {
 
 function MiniLineChart({
   data,
-  dataKey = "value",
+  dataKey,
+  dataValue,
   className = "",
 }) {
   if (!data || data.length === 0) {
@@ -57,7 +19,6 @@ function MiniLineChart({
       </div>
     );
   }
-
   return (
     <div className={`h-full w-full ${className}`}>
       <ResponsiveContainer width="100%" height="100%">
@@ -93,7 +54,7 @@ function MiniLineChart({
           </defs>
 
           <XAxis
-            dataKey="time"
+            dataKey={dataKey}
             hide
           />
 
@@ -122,7 +83,7 @@ function MiniLineChart({
 
           <Area
             type="linear"
-            dataKey={dataKey}
+            dataKey={dataValue}
             stroke="var(--primary)"
             strokeWidth={2}
             fill="url(#miniChartGradient)"

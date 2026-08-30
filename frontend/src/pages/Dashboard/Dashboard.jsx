@@ -8,6 +8,42 @@ import SelectedStock from "./SelectedStock";
 import PortfolioPerformanceCard from "./portfolioPerformance";
 
 
+function MarketStatus() {
+    const now = new Date();
+
+    const nyTime = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }).format(now);
+    console.log(nyTime)
+    const [hour, minute] = nyTime.split(":").map(Number);
+
+    const isOpen =
+        (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+  return (
+    <div
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
+        isOpen
+          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+          : "border-red-500/30 bg-red-500/10 text-red-300"
+      }`}
+    >
+      <span
+        className={`size-2 rounded-full ${
+          isOpen
+            ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
+            : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
+        }`}
+      />
+
+      {isOpen ? "Market Open" : "Market Closed"}
+    </div>
+  );
+}
+
+
 
 function Metric({ label, value, detail }) {
   return (
@@ -54,7 +90,7 @@ export default function DashboardPage() {
             const isLoss = changeNum < 0;
             const formattedChange = `${isLoss ? "" : "+"}${changeNum.toFixed(2)}%`;
 
-            const rawPrice = parseFloat(UpdatedData.price);
+            const rawPrice = parseFloat(UpdatedData.close);
             const formattedPrice = isNaN(rawPrice) ? "--" : `$${rawPrice.toFixed(2)}`;
 
             return {
@@ -125,9 +161,8 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-md border border-[#0d8c51] bg-[#0d3828] px-3 py-1.5 text-sm text-gain">
-              <span className="size-1.5 rounded-full bg-gain" />
-              Market Connected
+            <div>
+              {MarketStatus()}
             </div>
           </header>
 
