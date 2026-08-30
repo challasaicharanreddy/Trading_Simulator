@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { useSocket } from "../../context/SocketContext";
 import { Menu } from "lucide-react";
-
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import MarketWatch, { watchlist } from "./MarketWatch";
 import SelectedStock from "./SelectedStock";
@@ -29,6 +30,41 @@ function Metric({ label, value, detail }) {
   );
 }
 
+function formatRelativeTime(date) {
+  if (!date) {
+    return "—";
+  }
+
+  const diff =
+    Date.now() - new Date(date).getTime();
+
+  const minutes = Math.floor(
+    diff / (1000 * 60)
+  );
+
+  if (minutes < 1) {
+    return "Just now";
+  }
+
+  if (minutes < 60) {
+    return `${minutes} min ago`;
+  }
+
+  const hours = Math.floor(
+    minutes / 60
+  );
+
+  if (hours < 24) {
+    return `${hours} hr ago`;
+  }
+
+  const days = Math.floor(
+    hours / 24
+  );
+
+  return `${days} day${days > 1 ? "s" : ""} ago`;
+}
+
 export default function DashboardPage() {
   const { socket } = useSocket();
   const [selected, setSelected] = useState("AAPL");
@@ -36,6 +72,9 @@ export default function DashboardPage() {
   const [activity, setActivity] = useState([]);
   const [portfolioPerformance, setPortfolioPerformance] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [metrics, setMetrics] = useState(null);
+  const [metricsLoading, setMetricsLoading] = useState(true);
+  const [metricsError, setMetricsError] = useState(null);
 
   useEffect(() => {
     if (!socket) return;
@@ -54,7 +93,7 @@ export default function DashboardPage() {
             const isLoss = changeNum < 0;
             const formattedChange = `${isLoss ? "" : "+"}${changeNum.toFixed(2)}%`;
 
-            const rawPrice = parseFloat(UpdatedData.price);
+            const rawPrice = parseFloat(UpdatedData.close);
             const formattedPrice = isNaN(rawPrice) ? "--" : `$${rawPrice.toFixed(2)}`;
 
             return {
@@ -85,6 +124,86 @@ export default function DashboardPage() {
       socket.off("priceChange", handlePriceChange);
     };
   }, [socket]);
+useEffect(() => {
+
+    const fetchMetrics = async () => {
+
+        try {
+
+            setMetricsLoading(true);
+
+            const response = await axios.get(
+                "http://localhost:5000/app/portfolio/metrics",
+                {
+                    withCredentials: true
+                }
+            );
+
+            setMetrics(response.data);
+
+        } catch (error) {
+
+            console.error(
+                "Failed to fetch portfolio metrics:",
+                error
+            );
+
+            setMetricsError(
+                "Failed to load portfolio metrics"
+            );
+
+        } finally {
+
+            setMetricsLoading(false);
+        }
+    };
+
+    fetchMetrics();
+
+}, []);
+
+useEffect(() => {
+
+  const fetchRecentActivity =
+    async () => {
+
+      try {
+
+        const response =
+          await axios.get(
+            "http://localhost:5000/app/transactions/recent",
+            {
+              withCredentials: true,
+            }
+          );
+
+
+        console.log(
+          "Recent activity:",
+          response.data
+        );
+
+
+        setActivity(
+          response.data
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Failed to fetch recent activity:",
+          error
+        );
+
+      }
+
+    };
+
+
+  fetchRecentActivity();
+
+}, []);
 
   const stock = useMemo(
     () => marketData.find((s) => s.symbol === selected) || marketData[0],
@@ -133,17 +252,18 @@ export default function DashboardPage() {
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric label="Portfolio Value" value="--" detail="" />
-              <Metric label="Available Cash" value="--" detail="" />
+
+              <Metric label="Portfolio Value" value={`$${metrics?.portfolioValue.toLocaleString() ?? "—"}`} detail="" />
+              <Metric label="Available Cash" value={`$${metrics?.cash.toLocaleString() ?? "—"}`} detail="" />
               <Metric
                 label="Today's P&L"
-                value="--"
-                detail=""
+                value={`$${metrics?.todayPnL.toLocaleString() ?? "—"}`}
+                detail={`${metrics?.todayPnLPercentage?.toFixed(2) ?? "—"}%`}
               />
               <Metric
                 label="Total Profit"
-                value="--"
-                detail=""
+                value={`$${metrics?.totalPnL.toLocaleString() ?? "—"}`}
+                detail={`${metrics?.totalPnLPercentage?.toFixed(2) ?? "—"}%`}
               />
             </div>
 
@@ -160,53 +280,106 @@ export default function DashboardPage() {
             <div className="grid gap-4 lg:grid-cols-[1fr_420px]">
               <PortfolioPerformanceCard/>
 
-              <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold">
-                    Recent Activity
-                  </h2>
+{/* RECENT ACTIVITY */}
 
-                  <span className="text-xs text-[#71829d]">
-                    Auto-trigger
-                  </span>
-                </div>
+<section className="rounded-md border border-[#1f3155] bg-[#121b30] p-4">
 
-                <div className="mt-4 space-y-4">
-                  {activity.length === 0 ? (
-                    <p className="text-xs text-[#71829d]">No recent activity</p>
-                  ) : (
-                    activity.map(
-                      ([type, symbol, detail, time, tone]) => (
-                        <div
-                          key={`${type}-${symbol}`}
-                          className="grid grid-cols-[52px_52px_1fr_80px] items-center gap-3 text-sm"
+    {/* HEADER */}
+
+    <div className="flex items-center justify-between">
+
+        <div>
+            <h2 className="text-base font-semibold text-white">
+                Recent Activity
+            </h2>
+
+            <p className="mt-1 text-xs text-[#71829d]">
+                Latest executed orders
+            </p>
+        </div>
+
+        <Link
+            to="/transactions"
+            className="text-xs text-[#4b91ff] hover:text-[#70a7ff]"
+        >
+            View All →
+        </Link>
+
+    </div>
+
+
+    {/* TRANSACTIONS */}
+
+    <div className="mt-5 space-y-4">
+
+        {activity.length === 0 ? (
+
+            <p className="text-xs text-[#71829d]">
+                No recent activity
+            </p>
+
+        ) : (
+
+            activity.map((transaction) => {
+
+                const isBuy =
+                    transaction.action === "BUY";
+
+
+                return (
+
+                    <div
+                        key={transaction.id}
+                        className="grid grid-cols-[52px_52px_1fr_80px] items-center gap-3"
+                    >
+
+                        {/* BUY / SELL */}
+
+                        <span
+                            className={`rounded-md px-2 py-1 text-center text-[10px] font-bold ${
+                                isBuy
+                                    ? "bg-[#0a6339] text-[#35e58b]"
+                                    : "bg-[#6e202a] text-[#ff8692]"
+                            }`}
                         >
-                          <span
-                            className={`rounded-md px-2 py-1 text-center text-[10px] font-bold ${tone === "gain"
-                              ? "bg-[#0a6339] text-gain"
-                              : "bg-[#6e202a] text-[#ff8692]"
-                              }`}
-                          >
-                            {type}
-                          </span>
+                            {transaction.action}
+                        </span>
 
-                          <span className="font-semibold text-white">
-                            {symbol}
-                          </span>
 
-                          <span className="font-mono text-xs text-white">
-                            {detail}
-                          </span>
+                        {/* SYMBOL */}
 
-                          <span className="whitespace-nowrap text-right text-xs text-[#71829d]">
-                            {time}
-                          </span>
-                        </div>
-                      )
-                    )
-                  )}
-                </div>
-              </section>
+                        <span className="font-semibold text-white">
+                            {transaction.symbol}
+                        </span>
+
+
+                        {/* ORDER DETAILS */}
+
+                        <span className="font-mono text-xs text-white">
+                            {transaction.quantity} shares @ $
+                            {Number(transaction.price).toFixed(2)}
+                        </span>
+
+
+                        {/* TIME */}
+
+                        <span className="whitespace-nowrap text-right text-xs text-[#71829d]">
+                            {formatRelativeTime(
+                                transaction.executedAt
+                            )}
+                        </span>
+
+                    </div>
+
+                );
+
+            })
+
+        )}
+
+    </div>
+
+</section>
             </div>
           </div>
         </main>

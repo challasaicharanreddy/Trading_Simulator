@@ -32,7 +32,7 @@ async function runPriceTick() {
             });
 
             await RedisClient.publish("price_change", JSON.stringify(mod_data));
-            console.log(`[Scheduler] Published price update for ${stock}: $${data.price}`);
+            // console.log(`[Scheduler] Published price update for ${stock}: $${data.price}`);
         } catch(err) {
             console.error(`[Scheduler Error ${stock}]:`, err.message);
         }

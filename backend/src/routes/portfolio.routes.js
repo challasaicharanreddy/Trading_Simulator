@@ -2,7 +2,7 @@ import express from "express";
 import portfolio from "../models/portfolio.js";
 import holdings from "../models/holdings.js";
 import PortfolioSnapshot from "../models/portfolioSnapshot.js";
-import { getdetails,getTradeHistory } from "../services/portfolio.services.js";
+import { getdetails,getTradeHistory ,PortfolioMetrics} from "../services/portfolio.services.js";
 
 const router=express.Router();
 const Model=portfolio;
@@ -61,6 +61,20 @@ router.get("/history", async (req, res) => {
       res.json(chartData);
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.get("/metrics", async(req,res)=>{
+    console.log("route hit")
+    try{
+      const userId=req.user.id;
+      const response=await PortfolioMetrics(userId);
+      res.json(response);
+    } catch (error) {
+      console.error("Portfolio metrics error:", error);
+      res.status(500).json({
+          error: error.message
+      });
     }
   });
 

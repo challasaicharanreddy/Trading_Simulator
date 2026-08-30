@@ -322,17 +322,20 @@ export default function PortfolioPage() {
   const [holding_stats,setholding_stats]=useState({});
   const [cash,setcash]=useState(0);
   const {socket,isConnected}=useSocket();
+  const [bestperformer,setbestperformer]=useState([]);
 
   let totalPortfolioValue=0;
   let totalPnL=0;
   let totalInvested=0;
   let activeHoldings=0;
+  let holding_numbers=0;
   for(const symbol in holding_stats) {
     const stats = holding_stats[symbol];
     totalPortfolioValue+=stats.curr_value;
     totalPnL+=stats.pnl;
     totalInvested+=(stats.avg_buy_price*stats.quantity);
-    activeHoldings++;
+    activeHoldings+=stats.quantity;
+    holding_numbers++;
   }
   totalPortfolioValue+=cash;
 
@@ -351,12 +354,18 @@ export default function PortfolioPage() {
   const newHoldings = [];
   const newPnl=[];
   let totalValue=0;
+  let temp=["",0];
 
   if(!holding_stats) return;
 
   for (const symbol in holding_stats) {
     const stats = holding_stats[symbol];
     const status=stats.pnl>0?"gain":"loss"
+
+    if(stats.pnl_percent>temp[1]) {
+      temp[0]=symbol;
+      temp[1]=stats.pnl_percent;
+    }
 
     newHoldings.push([
       symbol,
@@ -399,6 +408,7 @@ export default function PortfolioPage() {
   setallocation(newAllocation);
   setpnl(newPnl);
   setholdings(newHoldings);
+  setbestperformer(temp);
 
   }, [holding_stats]);
 
@@ -517,13 +527,13 @@ export default function PortfolioPage() {
               />
 
               <Stat
-                label="CHANGE IN TOTAL PORTFOLIO VALUE"
-                value={"$"+totalPnL.toFixed(2)}
-                detail={delta.toLocaleString() + " from previous day"}
+                label="BEST PERFORMER"
+                value={bestperformer[0]}
+                detail={bestperformer[1]?.toFixed(2)+"%"}
               />
 
               <Stat
-                label="Total P&L"
+                label="Holdings P&L"
                 value={"$"+totalPnL.toFixed(2)}
               />
 
@@ -533,14 +543,14 @@ export default function PortfolioPage() {
               />
 
               <Stat
-                label="Total Invested"
+                label="Holdings Investment"
                 value={"$"+totalInvested.toFixed(2)}
               />
 
               <Stat
                 label="Active Holdings"
                 value={activeHoldings}
-                detail={"Across "+activeHoldings+ " positions"}
+                detail={"Across "+holding_numbers+ " positions"}
               />
 
             </div>

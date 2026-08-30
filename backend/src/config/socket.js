@@ -22,12 +22,12 @@ function SocketInit(httpServer){
         console.log(`Socket connected: user ${socket.userId}, socket ${socket.id}`);
         socket.on("subscribe", (symbol)=>{
             socket.join(`room:${symbol}`);
-            console.log(`User ${socket.userId} subscribed to ${symbol}`);
+            // console.log(`User ${socket.userId} subscribed to ${symbol}`);
         });
 
         socket.on("unsubscribe", (symbol)=>{
             socket.leave(`room:${symbol}`);
-            console.log(`User ${socket.userId} unsubscribed from ${symbol}`);
+            // console.log(`User ${socket.userId} unsubscribed from ${symbol}`);
         });
 
         socket.on("disconnect",()=>{
@@ -38,7 +38,7 @@ function SocketInit(httpServer){
     subclient.on("message",(channel,message)=>{
         if(channel=="price_change") {
             const msg=JSON.parse(message);
-            console.log(msg)
+            // console.log(msg)
             io.to(`room:${msg.symbol}`).emit("priceChange",msg);
         }else if(channel=="new_minute_aggregation") {
             const msg=JSON.parse(message)
