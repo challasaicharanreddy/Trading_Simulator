@@ -285,6 +285,8 @@ export default function StockPage() {
     }catch(error) {
       if (error.response?.status === 410) {
         setmessage("Market Closed. Please Come again later");
+      }else{
+        setmessage("Transaction Failed, Please try after some time");
       }
     }
   }
@@ -297,6 +299,8 @@ export default function StockPage() {
     }catch(error) {
       if (error.response?.status === 410) {
         setmessage("Market Closed. Please Come again later");
+      }else{
+        setmessage("Transaction Failed, Please try after some time");
       }
     }
   }

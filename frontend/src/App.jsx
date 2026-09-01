@@ -7,6 +7,7 @@ import AuthPage from "./pages/AuthPage";
 import StockPage from "./pages/Stockpage";
 import PortfolioPage from "./pages/Portfolio";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Transactions from "./pages/Transactions";
 import "./App.css";
 
 function App() {
@@ -33,6 +34,15 @@ function App() {
         element={
             <ProtectedRoute>
             <Dashboard />
+            </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/transactions"
+        element={
+            <ProtectedRoute>
+            <Transactions />
             </ProtectedRoute>
         }
       />
