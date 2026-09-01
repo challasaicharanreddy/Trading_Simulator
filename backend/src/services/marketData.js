@@ -2,7 +2,7 @@ import axios from "axios";
 import redisClient from "../config/redis.js";
 
 const FINNHUB_BASE="https://finnhub.io/api/v1/quote";
-const CACHE_TTL_SEC=60;
+const CACHE_TTL_SEC=9;
 
 async function fetchPriceFromAPI(symbol){
     const response=await axios.get(FINNHUB_BASE,{

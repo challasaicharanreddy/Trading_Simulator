@@ -64,6 +64,10 @@ async function executeSellOrder(userId,symbol, quantity, price){
             `Insufficient shares. Trying to sell ${quantity}, own ${holding ? holding.quantity : 0}`
         );
     }
+    const pnl=(price-holding.avgCostPrice)*quantity;
+    console.log(price);
+    console.log(holding.avgCostPrice)
+    console.log(quantity)
     holding.quantity-=quantity;
     holding.updatedAt=Date.now();
 
@@ -84,7 +88,8 @@ async function executeSellOrder(userId,symbol, quantity, price){
         quantity,
         price,
         action: "SELL",
-        executedAt: Date.now()
+        executedAt: Date.now(),
+        pnl:pnl
     });
     console.log("sell order executed successfully");
     return {transaction, holding, cashBalance: portfolio.cashBalance};
