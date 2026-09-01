@@ -13,14 +13,15 @@ async function fetchPriceFromAPI(symbol){
         }
     });
 
-    console.log('RAW API RESPONSE:', JSON.stringify(response.data, null, 2));
+    // console.log('RAW API RESPONSE:', JSON.stringify(response.data, null, 2));
 
     const data = response.data;
 
     if (!data || data.c === 0) {
       throw new Error(`No price fetched for symbol: ${symbol}`);
     }
-console.log(data);
+// console.log(data);
+console.log("Data fetched");
 return {
     symbol: symbol,
     price: data.c,        
