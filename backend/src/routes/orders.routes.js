@@ -1,8 +1,7 @@
-// routes/orders.routes.js
 import express from "express";
 import { executeBuyOrder, executeSellOrder } from "../services/orderEngine.js";
 import { fetchWithCache } from "../services/marketData.js";
-
+import Transaction from "../models/transactions.js";
 function MarketStatus() {
     const now = new Date();
 
@@ -24,9 +23,9 @@ const router = express.Router();
 
 router.post("/buy",async (req, res) => {
   try {
-    if(!MarketStatus()) {
-      return res.status(410).json({ error: "Market Closed, Please come back later" });
-    }
+    // if(!MarketStatus()) {
+    //   return res.status(410).json({ error: "Market Closed, Please come back later" });
+    // }
     const { symbol, quantity } = req.body;
     const userId = req.user.id; 
     const data=await fetchWithCache(symbol);
@@ -45,12 +44,13 @@ router.post("/buy",async (req, res) => {
 
 router.post("/sell", async (req, res) => {
   try {
-    if(!MarketStatus()) {
-      return res.status(410).json({ error: "Market Closed, Please come back later" });
-    }
+    // if(!MarketStatus()) {
+    //   return res.status(410).json({ error: "Market Closed, Please come back later" });
+    // }
     const { symbol, quantity } = req.body;
     const userId = req.user.id;
-    const price=await fetchWithCache(symbol);
+    const data=await fetchWithCache(symbol);
+    const price=data.price;
 
     if (!symbol || !quantity || !price) {
       return res.status(400).json({ error: "symbol, quantity, and price are required" });
@@ -60,6 +60,24 @@ router.post("/sell", async (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+router.get("/recent", async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const transactions = await Transaction.find({
+      user: userId,
+    })
+      .sort({ executedAt: -1 })
+      .limit(5);
+
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
   }
 });
 

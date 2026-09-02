@@ -17,9 +17,9 @@ function Sidebar({ open, onClose}) {
   const { user }=useAuth();
   const nav = [
     ["Dashboard", LayoutDashboard, "/"],
-    ["Portfolio", PieChart, "/"],
+    ["Portfolio", PieChart, "/portfolio"],
     ["Transactions", Activity, "/transactions"],
-    ["Order Engine", Play, "/"],
+    ["Order Engine", Play, "/order-engine"],
     ["Strategies", Settings, "/"],
     ["Backtesting", BarChart3, "/"],
   ];
