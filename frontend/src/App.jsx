@@ -7,6 +7,7 @@ import AuthPage from "./pages/AuthPage";
 import StockPage from "./pages/Stockpage";
 import PortfolioPage from "./pages/Portfolio";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import OrderEngine from "./pages/OrderEngine";
 import Transactions from "./pages/Transactions";
 import "./App.css";
 
@@ -38,6 +39,12 @@ function App() {
         }
       />
 
+      <Route path="/order-engine" 
+      element={
+        <ProtectedRoute>
+          <OrderEngine />
+        </ProtectedRoute>
+      } />
       <Route
         path="/transactions"
         element={
