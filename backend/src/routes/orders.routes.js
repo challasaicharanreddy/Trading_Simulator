@@ -43,6 +43,7 @@ router.post("/buy",async (req, res) => {
 });
 
 router.post("/sell", async (req, res) => {
+  console.log(req.body)
   try {
     // if(!MarketStatus()) {
     //   return res.status(410).json({ error: "Market Closed, Please come back later" });

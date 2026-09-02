@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
   executedAt: {
     type: Date,
     default: Date.now,
+  },
+  pnl : {
+    type:Number
   }
 });
 

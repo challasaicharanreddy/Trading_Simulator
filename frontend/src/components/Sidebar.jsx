@@ -1,4 +1,4 @@
-import { Link,useNavigate } from "react-router-dom";
+import { Link,useNavigate,useLocation } from "react-router-dom";
 import {
   Activity,
   BarChart3,
@@ -14,6 +14,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 function Sidebar({ open, onClose}) {
+  const location = useLocation();
   const { user }=useAuth();
   const nav = [
     ["Dashboard", LayoutDashboard, "/"],
@@ -61,13 +62,15 @@ function Sidebar({ open, onClose}) {
       </div>
 
       <nav className="mt-6 space-y-1">
-        {nav.map(([label, Icon, to], index) => (
+        {nav.map(([label, Icon, to], index) => {
+          const isActive = location.pathname === to;
+          return (
           <Link
             key={label}
             to={to}
             onClick={onClose}
             className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm ${
-              index === 0
+              isActive
                 ? "border border-[#367eff] bg-[#172852] text-white"
                 : "text-[#70819f] hover:bg-[#17203a] hover:text-white"
             }`}
@@ -75,7 +78,8 @@ function Sidebar({ open, onClose}) {
             <Icon size={15} />
             {label}
           </Link>
-        ))}
+          )
+        })}
       </nav>
 
       <div className="mt-auto">
