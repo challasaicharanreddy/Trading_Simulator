@@ -12,12 +12,19 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
         }
     }).sort({ timestamp: 1 });
 
+    quantity = Number(quantity);
+    buyThreshold = Number(buyThreshold);
+    sellThreshold = Number(sellThreshold);
+
     let cash = 1000000;
     let shares = 0;
     let avgCost = 0;
+    let peak = cash;
+    let maxDrawDown = 0;
 
     const trades = [];
     let prices = [];
+    const pvalues=[];
 
     let profitableTrades = 0;
     let totalTrades = 0;
@@ -55,6 +62,8 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
                     quantity: quantity,
                     TransactionAt: candle.timestamp
                 });
+                const portfoliovalue=(cash+(shares*cost))
+                const temp=[portfoliovalue,candle.timestamp]
             }
         }
         if (sellResult) {
@@ -76,9 +85,28 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
                 });
                 totalProfit+=profit;
                 totalTrades++;
+                const portfoliovalue=(cash+(shares*cost))
+                const temp=[(cash+(shares*cost)),candle.timestamp]
             }
         }
+        const cost = prices[prices.length - 1];
+        const portfoliovalue=(cash+(shares*cost))
+        peak = Math.max(peak, portfoliovalue);
+
+        if (candle.timestamp.getMinutes() === 0) {
+            pvalues.push([
+                portfoliovalue,
+                candle.timestamp
+            ]);
+        }
+
+        const drawdown =
+            ((peak - portfoliovalue) / peak) * 100;
+
+        maxDrawDown = Math.max(maxDrawDown, drawdown);
     }
+
+    
 
     let winRate=totalTrades === 0 ? 0 : (profitableTrades / totalTrades) * 100;
     const initialCapital=1000000;
@@ -92,8 +120,12 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
 
     return {
         trades:trades,
+        totalTrades,
+        profitableTrades,
+        finalPortfolioValue,
         totalReturnPct:totalReturnPct,
         winRate:winRate,
-        totalProfit:totalProfit
+        pvalues,
+        maxDrawDown
     }
 }

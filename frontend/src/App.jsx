@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import OrderEngine from "./pages/OrderEngine";
 import Transactions from "./pages/Transactions";
 import StrategyEngine from "./pages/StrategyEngine";
+import BacktestingPage from "./pages/Backtest/BacktestingPage";
 import "./App.css";
 
 function App() {
@@ -52,6 +53,14 @@ function App() {
         element={
             <ProtectedRoute>
             <Transactions />
+            </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/backtest"
+        element={
+            <ProtectedRoute>
+            <BacktestingPage />
             </ProtectedRoute>
         }
       />
