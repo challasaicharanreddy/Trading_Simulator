@@ -24,12 +24,14 @@ async function checkAndExecuteStrategies(symbol) {
                     await executeSellOrder(strategy.user, strategy.symbol, strategy.quantity, currPrice);
                 }
 
-                console.log(`Strategy fired: ${strategy.action} ${strategy.quantity} ${strategy.symbol} for user ${strategy.user}`);
+                console.log(
+                    `Strategy fired: ${strategy.name} | ${strategy.action} ${strategy.quantity} ${strategy.symbol} for user ${strategy.user}`
+                  );
 
                 strategy.status="INACTIVE";
                 await strategy.save();
             }catch(err){
-                console.error(`Strategy execution failed for ${strategy._id}:`, err.message);
+                console.error(`Strategy "${strategy.name}" execution failed for ${strategy._id}:`, err.message);
             }
         }
     }

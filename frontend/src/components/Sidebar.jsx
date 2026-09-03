@@ -21,7 +21,7 @@ function Sidebar({ open, onClose}) {
     ["Portfolio", PieChart, "/portfolio"],
     ["Transactions", Activity, "/transactions"],
     ["Order Engine", Play, "/order-engine"],
-    ["Strategies", Settings, "/"],
+    ["Strategies", Settings, "/strategy-engine"],
     ["Backtesting", BarChart3, "/backtest"],
   ];
   const navigate=useNavigate();
@@ -85,21 +85,21 @@ function Sidebar({ open, onClose}) {
       <div className="mt-auto">
         <div className="rounded-md border border-[#1d2e4e] bg-[#101a2e] p-2">
           <div className="flex items-center gap-2">
-            <div className="grid size-7 place-items-center rounded bg-[#294465] text-xs font-bold text-white">
-              {
-                user.username.split(" ")[0][0]
-              }
-            </div>
+          <div className="grid size-7 place-items-center rounded bg-[#294465] text-xs font-bold text-white">
+          {user?.username
+            ? user.username.split(" ")[0][0].toUpperCase()
+            : "U"}
+          </div>
 
-            <div>
-              <p className="text-sm font-semibold text-white">
-                {user.username}
-              </p>
+          <div>
+          <p className="text-sm font-semibold text-white">
+            {user?.username || "User"}
+          </p>
 
-              <p className="text-xs text-[#6f819e]">
-                {user.email}
-              </p>
-            </div>
+          <p className="text-xs text-[#6f819e]">
+            {user?.email || ""}
+          </p>
+          </div>
           </div>
         </div>
 
