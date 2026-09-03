@@ -22,7 +22,7 @@ function Sidebar({ open, onClose}) {
     ["Transactions", Activity, "/transactions"],
     ["Order Engine", Play, "/order-engine"],
     ["Strategies", Settings, "/"],
-    ["Backtesting", BarChart3, "/"],
+    ["Backtesting", BarChart3, "/backtest"],
   ];
   const navigate=useNavigate();
 

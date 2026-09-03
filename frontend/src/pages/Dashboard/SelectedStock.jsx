@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import MiniLineChart from "./MiniLineChart";
+import { useEffect } from "react";
 
 function SelectedStock({ stock }) {
   const navigate = useNavigate();

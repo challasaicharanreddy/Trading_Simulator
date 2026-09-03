@@ -18,7 +18,7 @@ const startserver=async ()=>{
     });
 }
 startserver();
-scheduler();
-startPortfolioSnapshotScheduler();
+// scheduler();
+// startPortfolioSnapshotScheduler();
 
 
