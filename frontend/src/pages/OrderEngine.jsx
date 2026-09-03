@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useSocket } from "../context/SocketContext";
 import Sidebar from "../components/Sidebar";
+import { Link } from "react-router-dom";
 
 const stocks = [
   { symbol: "AAPL", name: "Apple Inc." },
@@ -747,12 +748,12 @@ function OrderEngine() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  className="text-sm text-[#4b91ff] hover:text-white"
+                <Link
+                    to="/transactions"
+                    className="text-xs text-[#4b91ff] hover:text-[#70a7ff]"
                 >
-                  View All Orders →
-                </button>
+                    View All →
+                </Link>
 
               </div>
 

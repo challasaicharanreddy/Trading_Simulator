@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
         ref: "users",
         required: true,
     },
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     symbol: {
         type: String,
         required: true,
@@ -41,6 +46,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["ACTIVE", "INACTIVE"],
         default: "ACTIVE",
+        },
+    },
+    {
+        timestamps: true,
     }
-});
+);
+
+userSchema.index(
+    { user: 1, name: 1 },
+    { unique: true }
+  );
+
 export default mongoose.model("Strategy", userSchema);

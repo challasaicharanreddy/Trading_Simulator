@@ -1,6 +1,6 @@
 import transactions from "../models/transactions.js";
 import Portfolio from "../models/portfolio.js";
-export async function transaction(userid) {
+export async function transactionsService(userid) {
     const data=await transactions.find({user:userid}).sort({executedAt:-1});
     let buyorders=0;
     let sellorders=0;
