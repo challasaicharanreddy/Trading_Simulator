@@ -88,12 +88,6 @@ function MarketStatus() {
 
       {isOpen ? "Market Open" : "Market Closed"}
 
-      <Wifi
-        className={`size-3.5 ${
-          isOpen ? "text-gain" : "text-loss"
-        }`}
-        aria-hidden="true"
-      />
     </div>
   );
 }
