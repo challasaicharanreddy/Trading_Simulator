@@ -4,6 +4,7 @@ import {
   BarChart3,
   ChevronDown,
   LoaderCircle,
+  Menu,
   Play,
   RotateCcw,
 } from "lucide-react";
@@ -34,13 +35,13 @@ function Select({ value, onChange, children }) {
       <select
         value={value}
         onChange={onChange}
-        className="h-10 w-full appearance-none rounded border border-[#1f3155] bg-[#0e1729] px-3 pr-8 text-[13px] text-[#b8c4d8] outline-none focus:border-[#3c85ff]"
+        className="h-10 w-full appearance-none rounded-md border border-[#1f3155] bg-[#080e19] px-3 pr-8 font-mono text-sm text-white outline-none focus:border-[#3c85ff]"
       >
         {children}
       </select>
 
       <ChevronDown
-        size={15}
+        size={14}
         className="pointer-events-none absolute right-3 top-3 text-[#71829d]"
       />
     </span>
@@ -50,7 +51,7 @@ function Select({ value, onChange, children }) {
 function Field({ label, children, className = "" }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[11px] uppercase tracking-wider text-[#71829d]">
+      <span className="mb-1.5 block text-xs uppercase tracking-wider text-[#71829d] font-medium">
         {label}
       </span>
 
@@ -71,7 +72,7 @@ function Input({
       min={min}
       value={value}
       onChange={onChange}
-      className="h-10 w-full rounded border border-[#1f3155] bg-[#0e1729] px-3 text-[13px] text-[#b8c4d8] outline-none focus:border-[#3c85ff]"
+      className="h-10 w-full rounded-md border border-[#1f3155] bg-[#080e19] px-3 font-mono text-sm text-white outline-none focus:border-[#3c85ff]"
     />
   );
 }
@@ -93,7 +94,7 @@ function MarketStatus() {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-[13px] ${
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
         isOpen
           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
           : "border-red-500/30 bg-red-500/10 text-red-300"
@@ -288,24 +289,34 @@ export default function BacktestingPage() {
           {/* Header */}
           {/* ------------------------------------------ */}
 
-          <header className="flex h-[84px] items-center justify-between border-b border-[#182944] px-5 lg:px-7">
+          {/* Header */}
+
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
             <div className="flex items-center gap-3">
 
               <button
+                onClick={() => setMenuOpen(true)}
+                className="text-[#8292ac] lg:hidden"
+                aria-label="Open menu"
+              >
+                <Menu size={20} />
+              </button>
+
+              <button
                 onClick={() => navigate(-1)}
-                className="text-[#71829d] hover:text-white"
+                className="text-[#8292ac] hover:text-white"
                 aria-label="Go back"
               >
-                <ArrowLeft size={20} />
+                <ArrowLeft size={18} />
               </button>
 
               <div>
-                <h1 className="text-[22px] font-semibold">
-                  Backtesting
+                <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                  Backtesting Engine
                 </h1>
 
-                <p className="mt-1 text-[13px] text-[#71829d]">
+                <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
                   Test your trading strategy against historical market data.
                 </p>
               </div>
@@ -313,24 +324,19 @@ export default function BacktestingPage() {
             </div>
 
             {/* Market Status */}
-
             <MarketStatus />
 
           </header>
 
-          {/* ------------------------------------------ */}
           {/* Page Content */}
-          {/* ------------------------------------------ */}
 
-          <div className="mx-auto max-w-[1300px] space-y-4 p-5 lg:p-6">
+          <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* ------------------------------------------ */}
             {/* Backtest Configuration */}
-            {/* ------------------------------------------ */}
 
             <form
               onSubmit={runBacktest}
-              className="rounded-md border border-[#1f3155] bg-[#121b30] p-4 lg:p-5"
+              className="rounded-md border border-[#1f3155] bg-[#121b30] p-5"
             >
 
               {/* Configuration Header */}
@@ -338,13 +344,12 @@ export default function BacktestingPage() {
               <div className="mb-5 flex items-start justify-between">
 
                 <div>
-                  <h2 className="text-[16px] font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Backtest Configuration
                   </h2>
 
-                  <p className="mt-1 text-[13px] text-[#71829d]">
-                    Configure your strategy and run it against historical
-                    market data.
+                  <p className="mt-1 text-xs text-[#71829d]">
+                    Configure your strategy and run it against historical market data.
                   </p>
                 </div>
 
@@ -355,18 +360,14 @@ export default function BacktestingPage() {
 
               </div>
 
-              {/* ------------------------------------------ */}
               {/* Configuration Sections */}
-              {/* ------------------------------------------ */}
 
               <div className="space-y-5">
 
-                {/* ------------------------------------------ */}
                 {/* Backtest Period */}
-                {/* ------------------------------------------ */}
 
                 <div>
-                  <p className="mb-2 text-[11px] font-semibold tracking-widest text-[#3c85ff]">
+                  <p className="mb-2 text-xs font-semibold tracking-wider text-[#3c85ff]">
                     BACKTEST PERIOD
                   </p>
 
@@ -391,12 +392,10 @@ export default function BacktestingPage() {
                   </div>
                 </div>
 
-                {/* ------------------------------------------ */}
                 {/* Asset & Position */}
-                {/* ------------------------------------------ */}
 
                 <div>
-                  <p className="mb-2 text-[11px] font-semibold tracking-widest text-[#3c85ff]">
+                  <p className="mb-2 text-xs font-semibold tracking-wider text-[#3c85ff]">
                     ASSET & POSITION
                   </p>
 
@@ -430,9 +429,7 @@ export default function BacktestingPage() {
                   </div>
                 </div>
 
-                {/* ------------------------------------------ */}
                 {/* Buy Condition */}
-                {/* ------------------------------------------ */}
 
                 <Condition
                   title="BUY CONDITION"
@@ -445,9 +442,7 @@ export default function BacktestingPage() {
                   helper="Buy when the selected indicator satisfies this condition."
                 />
 
-                {/* ------------------------------------------ */}
                 {/* Sell Condition */}
-                {/* ------------------------------------------ */}
 
                 <Condition
                   title="SELL CONDITION"
@@ -462,24 +457,20 @@ export default function BacktestingPage() {
 
               </div>
 
-              {/* ------------------------------------------ */}
               {/* Error */}
-              {/* ------------------------------------------ */}
 
               {error && (
-                <p className="mt-4 rounded border border-red-500/40 bg-red-950/20 px-3 py-2 text-[12px] text-red-300">
+                <p className="mt-4 rounded-md border border-[#7f2935] bg-[#421820] px-3 py-2 text-xs text-[#ff8692]">
                   {error}
                 </p>
               )}
 
-              {/* ------------------------------------------ */}
               {/* Run Button */}
-              {/* ------------------------------------------ */}
 
               <button
                 type="submit"
                 disabled={running}
-                className="mt-5 inline-flex h-10 items-center gap-2 rounded bg-[#3c85ff] px-4 text-[13px] font-semibold text-white hover:bg-[#5593ff] disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-5 inline-flex h-10 items-center gap-2 rounded-md bg-[#3c85ff] px-4 text-sm font-semibold text-white transition hover:bg-[#3277eb] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {running ? (
                   <>

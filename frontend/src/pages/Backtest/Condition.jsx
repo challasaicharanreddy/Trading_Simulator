@@ -1,12 +1,4 @@
-import {
-  ArrowLeft,
-  BarChart3,
-  Check,
-  ChevronDown,
-  LoaderCircle,
-  Play,
-  RotateCcw,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 function Select({ value, onChange, children }) {
   return (
@@ -14,7 +6,7 @@ function Select({ value, onChange, children }) {
       <select
         value={value}
         onChange={onChange}
-        className="h-10 w-full appearance-none rounded border border-[#1f3155] bg-[#0e1729] px-3 pr-8 text-[12px] text-[#b8c4d8] outline-none focus:border-[#3c85ff]"
+        className="h-10 w-full appearance-none rounded-md border border-[#1f3155] bg-[#080e19] px-3 pr-8 font-mono text-sm text-white outline-none focus:border-[#3c85ff]"
       >
         {children}
       </select>
@@ -30,7 +22,7 @@ function Select({ value, onChange, children }) {
 function Field({ label, children, className = "" }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block text-[10px] uppercase tracking-wider text-[#71829d]">
+      <span className="mb-1.5 block text-xs uppercase tracking-wider text-[#71829d] font-medium">
         {label}
       </span>
 
@@ -38,7 +30,6 @@ function Field({ label, children, className = "" }) {
     </label>
   );
 }
-
 
 function Input({
   value,
@@ -52,38 +43,10 @@ function Input({
       min={min}
       value={value}
       onChange={onChange}
-      className="h-10 w-full rounded border border-[#1f3155] bg-[#0e1729] px-3 text-[12px] text-[#b8c4d8] outline-none focus:border-[#3c85ff]"
+      className="h-10 w-full rounded-md border border-[#1f3155] bg-[#080e19] px-3 font-mono text-sm text-white outline-none focus:border-[#3c85ff]"
     />
   );
 }
-
-
-function Metric({
-  label,
-  value,
-  tone = "",
-}) {
-  return (
-    <div className="rounded-md border border-[#1f3155] bg-[#121b30] p-3">
-      <p className="text-[10px] uppercase tracking-wider text-[#71829d]">
-        {label}
-      </p>
-
-      <p
-        className={`mt-2 font-mono text-[18px] font-semibold ${
-          tone === "positive"
-            ? "text-emerald-400"
-            : tone === "negative"
-            ? "text-red-400"
-            : "text-white"
-        }`}
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
 
 export default function Condition({
   title,
@@ -98,7 +61,7 @@ export default function Condition({
   return (
     <div>
 
-      <p className="mb-2 text-[10px] font-semibold tracking-widest text-[#3c85ff]">
+      <p className="mb-2 text-xs font-semibold tracking-wider text-[#3c85ff]">
         {title}
       </p>
 
@@ -115,7 +78,6 @@ export default function Condition({
           </Select>
         </Field>
 
-
         {/* Operator */}
         <Field label="Operator">
           <Select
@@ -126,7 +88,6 @@ export default function Condition({
             <option>&lt;</option>
           </Select>
         </Field>
-
 
         {/* Threshold */}
         <Field label="Threshold">
@@ -139,7 +100,7 @@ export default function Condition({
 
       </div>
 
-      <p className="mt-2 text-[10px] text-[#71829d]">
+      <p className="mt-2 text-xs text-[#71829d]">
         {helper}
       </p>
 

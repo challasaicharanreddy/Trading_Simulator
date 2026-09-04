@@ -37,15 +37,14 @@ function SelectBox({ value, onChange, children }) {
 
 function Metric({ label, value, tone }) {
   return (
-    <div className="rounded-md border border-[#1f3155] bg-[#121b30] px-3 py-3">
-      <div className="text-xs uppercase tracking-wider text-[#71829d]">
+    <div className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
+      <div className="text-xs uppercase tracking-wider text-[#71829d] font-medium">
         {label}
       </div>
 
       <div
-        className={`mt-2 font-mono text-lg font-semibold ${
-          tone || "text-white"
-        }`}
+        className={`mt-2 font-mono text-2xl font-semibold ${tone || "text-white"
+          }`}
       >
         {value}
       </div>
@@ -72,26 +71,23 @@ function MarketStatus() {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${
-        isOpen
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${isOpen
           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
           : "border-red-500/30 bg-red-500/10 text-red-300"
-      }`}
+        }`}
     >
       <span
-        className={`size-2 rounded-full ${
-          isOpen
+        className={`size-2 rounded-full ${isOpen
             ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
             : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
-        }`}
+          }`}
       />
 
       {isOpen ? "Market Open" : "Market Closed"}
 
       <Wifi
-        className={`size-3.5 ${
-          isOpen ? "text-gain" : "text-loss"
-        }`}
+        className={`size-3.5 ${isOpen ? "text-gain" : "text-loss"
+          }`}
         aria-hidden="true"
       />
     </div>
@@ -257,7 +253,7 @@ export default function TransactionsPage() {
         <main className="min-w-0 flex-1">
 
           {/* Header */}
-          <header className="flex min-h-16 items-center justify-between border-b border-[#182944] px-4 py-3 lg:px-7">
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
             <div className="flex items-center gap-3">
 
@@ -271,18 +267,18 @@ export default function TransactionsPage() {
 
               <button
                 onClick={() => navigate(-1)}
-                className="hidden text-[#8292ac] hover:text-white lg:block"
+                className="text-[#8292ac] hover:text-white"
                 aria-label="Go back"
               >
-                <ArrowLeft size={17} />
+                <ArrowLeft size={18} />
               </button>
 
               <div>
-                <h1 className="text-xl font-semibold tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                   Transactions
                 </h1>
 
-                <p className="mt-1 text-sm text-[#71829d]">
+                <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
                   View your complete trading activity.
                 </p>
               </div>
@@ -295,10 +291,10 @@ export default function TransactionsPage() {
 
           </header>
 
-          <div className="mx-auto max-w-[1100px] space-y-4 p-4 lg:p-7">
+          <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
             {/* Metrics */}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
               <Metric
                 label="Total Orders"
@@ -332,7 +328,7 @@ export default function TransactionsPage() {
                 value={
                   response
                     ? "$" +
-                      response.avgtradesize.toFixed(2)
+                    response.avgtradesize.toFixed(2)
                     : "-"
                 }
               />
@@ -340,12 +336,12 @@ export default function TransactionsPage() {
             </div>
 
             {/* Filters */}
-            <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-3">
+            <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 flex items-center gap-2 text-base font-semibold text-white">
 
                 <Filter
-                  size={14}
+                  size={15}
                   className="text-[#3c85ff]"
                 />
 
@@ -353,7 +349,7 @@ export default function TransactionsPage() {
 
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
 
                 <SelectBox
                   value={type}
@@ -406,7 +402,7 @@ export default function TransactionsPage() {
                       setPage(1);
                     }}
                     placeholder="Search symbol or transaction ID"
-                    className="w-full rounded border border-[#1f3155] bg-[#0e1729] py-2 pl-9 pr-3 text-sm text-white outline-none placeholder:text-[#71829d] focus:border-[#3c85ff]"
+                    className="w-full rounded-md border border-[#1f3155] bg-[#080e19] py-2 pl-9 pr-3 text-sm text-white outline-none placeholder:text-[#71829d] focus:border-[#3c85ff]"
                   />
 
                 </label>
@@ -418,11 +414,11 @@ export default function TransactionsPage() {
             {/* Transaction History */}
             <section className="overflow-hidden rounded-md border border-[#1f3155] bg-[#121b30]">
 
-              <div className="flex items-center justify-between border-b border-[#1f3155] px-3 py-3">
+              <div className="flex items-center justify-between border-b border-[#1f3155] px-5 py-4">
 
                 <div>
 
-                  <h2 className="text-base font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Transaction History
                   </h2>
 
@@ -506,11 +502,10 @@ export default function TransactionsPage() {
                           <td className="px-3 py-3">
 
                             <span
-                              className={`rounded px-2 py-1 text-xs font-bold ${
-                                row[1] === "BUY"
+                              className={`rounded px-2 py-1 text-xs font-bold ${row[1] === "BUY"
                                   ? "bg-[#0d3828] text-gain"
                                   : "bg-[#411d28] text-loss"
-                              }`}
+                                }`}
                             >
                               {row[1]}
                             </span>
@@ -539,13 +534,12 @@ export default function TransactionsPage() {
 
                           {/* P&L */}
                           <td
-                            className={`px-3 py-3 font-mono text-sm ${
-                              row[6] == "--"
+                            className={`px-3 py-3 font-mono text-sm ${row[6] == "--"
                                 ? "text-[#71829d]"
                                 : row[6][0] == "-"
-                                ? "text-loss"
-                                : "text-gain"
-                            }`}
+                                  ? "text-loss"
+                                  : "text-gain"
+                              }`}
                           >
                             {row[6].toLocaleString()}
                           </td>
@@ -623,11 +617,10 @@ export default function TransactionsPage() {
                           onClick={() =>
                             setPage(i + 1)
                           }
-                          className={`size-6 rounded text-xs ${
-                            currentPage === i + 1
+                          className={`size-6 rounded text-xs ${currentPage === i + 1
                               ? "bg-[#3c85ff] text-white"
                               : "border border-[#1f3155] hover:bg-[#17243e]"
-                          }`}
+                            }`}
                         >
                           {i + 1}
                         </button>

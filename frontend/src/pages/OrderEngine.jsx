@@ -312,7 +312,7 @@ function OrderEngine() {
 
           {/* HEADER */}
 
-          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-10">
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
             <button
               onClick={() => setMenuOpen(true)}
@@ -323,43 +323,48 @@ function OrderEngine() {
             </button>
 
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 Order Engine
               </h1>
 
-              <p className="mt-1 text-sm text-[#71829d]">
+              <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
                 Execute and monitor your trading orders.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-md border border-[#0d8c51] bg-[#0d3828] px-3 py-1.5 text-sm text-gain">
-              <span className="size-1.5 rounded-full bg-gain" />
-
-              {isConnected
-                ? "Market Connected"
-                : "Market Disconnected"}
+            <div className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
+              isConnected
+                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                : "border-red-500/30 bg-red-500/10 text-red-300"
+            }`}>
+              <span className={`size-2 rounded-full ${
+                isConnected
+                  ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
+                  : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
+              }`} />
+              {isConnected ? "Market Connected" : "Market Disconnected"}
             </div>
 
           </header>
 
           {/* CONTENT */}
 
-          <div className="mx-auto max-w-[1280px] space-y-5 p-6 lg:p-8">
+          <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
             {/* TOP SECTION */}
 
-            <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
 
               {/* PLACE ORDER */}
 
               <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
                 <div>
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Place Order
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#71829d]">
+                  <p className="mt-1 text-xs text-[#71829d]">
                     Configure and submit a market order.
                   </p>
                 </div>
@@ -582,7 +587,7 @@ function OrderEngine() {
 
                 <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Order Summary
                   </h2>
 
@@ -670,7 +675,7 @@ function OrderEngine() {
 
                 <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
-                  <h2 className="text-base font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Trading Information
                   </h2>
 
@@ -739,18 +744,18 @@ function OrderEngine() {
               <div className="flex items-center justify-between">
 
                 <div>
-                  <h2 className="text-lg font-semibold">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Recent Orders
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#71829d]">
+                  <p className="mt-1 text-xs text-[#71829d]">
                     Latest submitted orders
                   </p>
                 </div>
 
                 <Link
                     to="/transactions"
-                    className="text-xs text-[#4b91ff] hover:text-[#70a7ff]"
+                    className="text-xs text-[#3c85ff] hover:text-[#5896ff]"
                 >
                     View All →
                 </Link>

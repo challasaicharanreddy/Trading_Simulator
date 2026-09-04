@@ -27,10 +27,10 @@ function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
 
   return (
     <section className="overflow-hidden rounded-md border border-[#1f3155] bg-[#121b30]">
-      <div className="flex items-center justify-between border-b border-[#1f3155] px-3 py-3">
-        <h2 className="text-base font-semibold">Market Watch</h2>
+      <div className="flex items-center justify-between border-b border-[#1f3155] px-5 py-4">
+        <h2 className="text-base sm:text-lg font-semibold text-white">Market Watch</h2>
 
-        <span className={`text-sm ${isConnected ? "text-gain" : "text-loss"}`}>
+        <span className={`text-xs font-medium ${isConnected ? "text-gain" : "text-loss"}`}>
           ● {isConnected ? "LIVE" : "DISCONNECTED"}
         </span>
       </div>

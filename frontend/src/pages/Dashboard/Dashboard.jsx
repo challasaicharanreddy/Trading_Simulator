@@ -10,33 +10,31 @@ import PortfolioPerformanceCard from "./portfolioPerformance";
 
 
 function MarketStatus() {
-    const now = new Date();
+  const now = new Date();
 
-    const nyTime = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    }).format(now);
-    console.log(nyTime)
-    const [hour, minute] = nyTime.split(":").map(Number);
+  const nyTime = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(now);
+  console.log(nyTime)
+  const [hour, minute] = nyTime.split(":").map(Number);
 
-    const isOpen =
-        (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+  const isOpen =
+    (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
-        isOpen
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${isOpen
           ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
           : "border-red-500/30 bg-red-500/10 text-red-300"
-      }`}
+        }`}
     >
       <span
-        className={`size-2 rounded-full ${
-          isOpen
+        className={`size-2 rounded-full ${isOpen
             ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
             : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
-        }`}
+          }`}
       />
 
       {isOpen ? "Market Open" : "Market Closed"}
@@ -46,19 +44,32 @@ function MarketStatus() {
 
 
 
-function Metric({ label, value, detail }) {
+function Metric({ label, value, detail, isPnL, numericValue, tone }) {
+  const isLoss = tone === "loss" || (numericValue !== undefined ? numericValue < 0 : String(value).includes("-"));
+  const isGain = tone === "gain" || (numericValue !== undefined ? numericValue > 0 : (isPnL && !isLoss));
+
+  const valueColor = isPnL
+    ? isLoss
+      ? "text-loss"
+      : isGain
+        ? "text-gain"
+        : "text-white"
+    : "text-white";
+
+  const detailColor = isLoss ? "text-loss" : "text-gain";
+
   return (
-    <div className="rounded-md border border-[#1f3155] bg-[#121b30] px-3 py-3">
-      <p className="text-sm uppercase tracking-wider text-[#71829d]">
+    <div className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
+      <p className="text-xs font-medium uppercase tracking-wider text-[#71829d]">
         {label}
       </p>
 
-      <p className="mt-2 font-mono text-2xl font-semibold text-white">
+      <p className={`mt-2 font-mono text-2xl font-semibold ${valueColor}`}>
         {value}
       </p>
 
       {detail && (
-        <p className="mt-1 font-mono text-sm text-gain">
+        <p className={`mt-1 font-mono text-xs ${detailColor}`}>
           {detail}
         </p>
       )}
@@ -160,86 +171,86 @@ export default function DashboardPage() {
       socket.off("priceChange", handlePriceChange);
     };
   }, [socket]);
-useEffect(() => {
+  useEffect(() => {
 
     const fetchMetrics = async () => {
 
-        try {
-
-            setMetricsLoading(true);
-
-            const response = await axios.get(
-                "http://localhost:5000/app/portfolio/metrics",
-                {
-                    withCredentials: true
-                }
-            );
-
-            setMetrics(response.data);
-
-        } catch (error) {
-
-            console.error(
-                "Failed to fetch portfolio metrics:",
-                error
-            );
-
-            setMetricsError(
-                "Failed to load portfolio metrics"
-            );
-
-        } finally {
-
-            setMetricsLoading(false);
-        }
-    };
-
-    fetchMetrics();
-
-}, []);
-
-useEffect(() => {
-
-  const fetchRecentActivity =
-    async () => {
-
       try {
 
-        const response =
-          await axios.get(
-            "http://localhost:5000/app/transactions/recent",
-            {
-              withCredentials: true,
-            }
-          );
+        setMetricsLoading(true);
 
-
-        console.log(
-          "Recent activity:",
-          response.data
+        const response = await axios.get(
+          "http://localhost:5000/app/portfolio/metrics",
+          {
+            withCredentials: true
+          }
         );
 
-
-        setActivity(
-          response.data
-        );
-
+        setMetrics(response.data);
 
       } catch (error) {
 
         console.error(
-          "Failed to fetch recent activity:",
+          "Failed to fetch portfolio metrics:",
           error
         );
 
-      }
+        setMetricsError(
+          "Failed to load portfolio metrics"
+        );
 
+      } finally {
+
+        setMetricsLoading(false);
+      }
     };
 
+    fetchMetrics();
 
-  fetchRecentActivity();
+  }, []);
 
-}, []);
+  useEffect(() => {
+
+    const fetchRecentActivity =
+      async () => {
+
+        try {
+
+          const response =
+            await axios.get(
+              "http://localhost:5000/app/transactions/recent",
+              {
+                withCredentials: true,
+              }
+            );
+
+
+          console.log(
+            "Recent activity:",
+            response.data
+          );
+
+
+          setActivity(
+            response.data
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Failed to fetch recent activity:",
+            error
+          );
+
+        }
+
+      };
+
+
+    fetchRecentActivity();
+
+  }, []);
 
   const stock = useMemo(
     () => marketData.find((s) => s.symbol === selected) || marketData[0],
@@ -260,7 +271,7 @@ useEffect(() => {
         )}
 
         <main className="min-w-0 flex-1">
-          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-10">
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
             <button
               onClick={() => setMenuOpen(true)}
               className="text-[#8292ac] lg:hidden"
@@ -270,13 +281,12 @@ useEffect(() => {
             </button>
 
             <div className="hidden lg:block">
-              <h1 className="text-3xl font-semibold tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 Algorithmic Trading Dashboard
               </h1>
 
-              <p className="mt-1 text-sm text-[#71829d]">
-                Monitor your portfolio, market movements, and trading activity
-                in real-time.
+              <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
+                Monitor your portfolio, market movements, and trading activity in real-time.
               </p>
             </div>
 
@@ -286,23 +296,37 @@ useEffect(() => {
           </header>
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-              <Metric label="Portfolio Value" value={`$${metrics?.portfolioValue.toLocaleString() ?? "—"}`} detail="" />
-              <Metric label="Available Cash" value={`$${metrics?.cash.toLocaleString() ?? "—"}`} detail="" />
+              <Metric
+                label="Portfolio Value"
+                value={metrics?.portfolioValue !== undefined ? `$${metrics.portfolioValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+              />
+
+              <Metric
+                label="Available Cash"
+                value={metrics?.cash !== undefined ? `$${metrics.cash.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+              />
+
               <Metric
                 label="Today's P&L"
-                value={`$${metrics?.todayPnL.toLocaleString() ?? "—"}`}
-                detail={`${metrics?.todayPnLPercentage?.toFixed(2) ?? "—"}%`}
+                isPnL
+                numericValue={metrics?.todayPnL}
+                value={metrics?.todayPnL !== undefined ? `${metrics.todayPnL >= 0 ? "+" : "-"}$${Math.abs(metrics.todayPnL).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+                detail={metrics?.todayPnLPercentage !== undefined ? `${metrics.todayPnLPercentage >= 0 ? "+" : ""}${metrics.todayPnLPercentage.toFixed(2)}%` : ""}
               />
+
               <Metric
                 label="Total Profit"
-                value={`$${metrics?.totalPnL.toLocaleString() ?? "—"}`}
-                detail={`${metrics?.totalPnLPercentage?.toFixed(2) ?? "—"}%`}
+                isPnL
+                numericValue={metrics?.totalPnL}
+                value={metrics?.totalPnL !== undefined ? `${metrics.totalPnL >= 0 ? "+" : "-"}$${Math.abs(metrics.totalPnL).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+                detail={metrics?.totalPnLPercentage !== undefined ? `${metrics.totalPnLPercentage >= 0 ? "+" : ""}${metrics.totalPnLPercentage.toFixed(2)}%` : ""}
               />
+
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[420px_1fr]">
+            <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
               <MarketWatch
                 selected={selected}
                 setSelected={setSelected}
@@ -312,109 +336,101 @@ useEffect(() => {
               <SelectedStock stock={stock} />
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[1fr_420px]">
-              <PortfolioPerformanceCard/>
+            <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
+              <PortfolioPerformanceCard />
 
-{/* RECENT ACTIVITY */}
+              {/* RECENT ACTIVITY */}
+              <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base sm:text-lg font-semibold text-white">
+                      Recent Activity
+                    </h2>
 
-<section className="rounded-md border border-[#1f3155] bg-[#121b30] p-4">
+                    <p className="mt-1 text-xs text-[#71829d]">
+                      Latest executed orders
+                    </p>
+                  </div>
 
-    {/* HEADER */}
+                  <Link
+                    to="/transactions"
+                    className="text-xs text-[#3c85ff] hover:text-[#5896ff]"
+                  >
+                    View All →
+                  </Link>
+                </div>
 
-    <div className="flex items-center justify-between">
+                {/* TRANSACTIONS */}
 
-        <div>
-            <h2 className="text-base font-semibold text-white">
-                Recent Activity
-            </h2>
+                <div className="mt-5 space-y-4">
 
-            <p className="mt-1 text-xs text-[#71829d]">
-                Latest executed orders
-            </p>
-        </div>
+                  {activity.length === 0 ? (
 
-        <Link
-            to="/transactions"
-            className="text-xs text-[#4b91ff] hover:text-[#70a7ff]"
-        >
-            View All →
-        </Link>
+                    <p className="text-xs text-[#71829d]">
+                      No recent activity
+                    </p>
 
-    </div>
+                  ) : (
 
+                    activity.map((transaction) => {
 
-    {/* TRANSACTIONS */}
-
-    <div className="mt-5 space-y-4">
-
-        {activity.length === 0 ? (
-
-            <p className="text-xs text-[#71829d]">
-                No recent activity
-            </p>
-
-        ) : (
-
-            activity.map((transaction) => {
-
-                const isBuy =
-                    transaction.action === "BUY";
+                      const isBuy =
+                        transaction.action === "BUY";
 
 
-                return (
+                      return (
 
-                    <div
-                        key={transaction.id}
-                        className="grid grid-cols-[52px_52px_1fr_80px] items-center gap-3"
-                    >
-
-                        {/* BUY / SELL */}
-
-                        <span
-                            className={`rounded-md px-2 py-1 text-center text-[10px] font-bold ${
-                                isBuy
-                                    ? "bg-[#0a6339] text-[#35e58b]"
-                                    : "bg-[#6e202a] text-[#ff8692]"
-                            }`}
+                        <div
+                          key={transaction.id}
+                          className="grid grid-cols-[52px_52px_1fr_80px] items-center gap-3"
                         >
+
+                          {/* BUY / SELL */}
+
+                          <span
+                            className={`rounded-md px-2 py-1 text-center text-[10px] font-bold ${isBuy
+                                ? "bg-[#0a6339] text-[#35e58b]"
+                                : "bg-[#6e202a] text-[#ff8692]"
+                              }`}
+                          >
                             {transaction.action}
-                        </span>
+                          </span>
 
 
-                        {/* SYMBOL */}
+                          {/* SYMBOL */}
 
-                        <span className="font-semibold text-white">
+                          <span className="font-semibold text-white">
                             {transaction.symbol}
-                        </span>
+                          </span>
 
 
-                        {/* ORDER DETAILS */}
+                          {/* ORDER DETAILS */}
 
-                        <span className="font-mono text-xs text-white">
+                          <span className="font-mono text-xs text-white">
                             {transaction.quantity} shares @ $
                             {Number(transaction.price).toFixed(2)}
-                        </span>
+                          </span>
 
 
-                        {/* TIME */}
+                          {/* TIME */}
 
-                        <span className="whitespace-nowrap text-right text-xs text-[#71829d]">
+                          <span className="whitespace-nowrap text-right text-xs text-[#71829d]">
                             {formatRelativeTime(
-                                transaction.executedAt
+                              transaction.executedAt
                             )}
-                        </span>
+                          </span>
 
-                    </div>
+                        </div>
 
-                );
+                      );
 
-            })
+                    })
 
-        )}
+                  )}
 
-    </div>
+                </div>
 
-</section>
+              </section>
             </div>
           </div>
         </main>

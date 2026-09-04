@@ -19,15 +19,15 @@ function SelectedStock({ stock }) {
   const hasLivePrice = stock.price && stock.price !== "--";
 
   return (
-    <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-4">
+    <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-base sm:text-lg font-semibold text-white">
             {stock.symbol} / {stock.name}
           </h2>
 
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="font-mono text-2xl font-semibold">
+            <span className="font-mono text-2xl font-semibold text-white">
               {stock.price || "--"}
             </span>
 
@@ -37,12 +37,12 @@ function SelectedStock({ stock }) {
           </div>
         </div>
 
-        <span className={`mt-1 text-sm ${hasLivePrice ? "text-gain" : "text-[#71829d]"}`}>
+        <span className={`mt-1 text-xs font-medium ${hasLivePrice ? "text-gain" : "text-[#71829d]"}`}>
           ● {hasLivePrice ? "LIVE TICK" : "WAITING FOR TICK"}
         </span>
       </div>
 
-      <div className="mt-3 h-[340px] border-y border-dashed border-[#213653] bg-[#0f1a2c] p-2">
+      <div className="mt-4 h-[340px] border-y border-dashed border-[#213653] bg-[#0f1a2c] p-2">
         <MiniLineChart
           data={stock.chartData}
           dataKey="time"
@@ -50,7 +50,7 @@ function SelectedStock({ stock }) {
         />
       </div>
 
-      <div className="flex flex-wrap justify-between gap-2 pt-2 text-xs text-[#75849c]">
+      <div className="flex flex-wrap justify-between gap-2 pt-3 text-xs text-[#71829d]">
         <span>
           Open <b className="font-mono text-white">{stock.open || "--"}</b>
         </span>
@@ -69,7 +69,7 @@ function SelectedStock({ stock }) {
 
         <button
           onClick={() => navigate(`/stocks/${stock.symbol}`)}
-          className="ml-auto text-[#4b91ff]"
+          className="ml-auto font-medium text-[#3c85ff] hover:text-[#5896ff]"
         >
           View Details →
         </button>

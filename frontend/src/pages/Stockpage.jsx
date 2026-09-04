@@ -7,28 +7,21 @@ import {
   Activity,
   Wifi,
   CandlestickChart,
+  Menu,
 } from "lucide-react"
-import { createChart,CandlestickSeries } from 'lightweight-charts';
+import { createChart, CandlestickSeries } from 'lightweight-charts';
 import axios from "axios";
 import { useSocket } from "../context/SocketContext";
-
-
-// ---- Static dummy data --------------------------------------------------
-// Replace with data from your Axios calls / Socket.IO stream.
+import Sidebar from "../components/Sidebar";
 
 const TIMEFRAMES = [
   { id: "1h", label: "1 Hour" },
-//   { id: "1d", label: "1 Day" },
 ]
-
-// ---- Formatting helpers -------------------------------------------------
 
 const fmtMoney = (n) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD" })
 
 const fmtNum = (n) => n.toLocaleString("en-US")
-
-// ---- Small reusable UI pieces -------------------------------------------
 
 function StatRow({ label, value, tone = "default" }) {
   const toneClass =
@@ -36,10 +29,10 @@ function StatRow({ label, value, tone = "default" }) {
       ? "text-gain"
       : tone === "loss"
         ? "text-loss"
-        : "text-foreground"
+        : "text-white"
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-border/60 py-2.5 last:border-b-0">
-      <span className="text-sm text-muted-foreground">{label}</span>
+    <div className="flex items-center justify-between gap-4 border-b border-[#1f3155] py-2.5 last:border-b-0">
+      <span className="text-sm text-[#71829d]">{label}</span>
       <span className={`font-mono text-sm font-medium tabular-nums ${toneClass}`}>
         {value}
       </span>
@@ -53,10 +46,10 @@ function OhlcCell({ label, value, tone = "default" }) {
       ? "text-gain"
       : tone === "loss"
         ? "text-loss"
-        : "text-foreground"
+        : "text-white"
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
+      <span className="text-[11px] uppercase tracking-wide text-[#71829d]">
         {label}
       </span>
       <span className={`font-mono text-sm font-semibold tabular-nums ${toneClass}`}>
@@ -69,12 +62,12 @@ function OhlcCell({ label, value, tone = "default" }) {
 function Panel({ title, icon: Icon, children, className = "" }) {
   return (
     <section
-      className={`rounded-xl border border-border bg-card p-4 sm:p-5 ${className}`}
+      className={`rounded-md border border-[#1f3155] bg-[#121b30] p-5 ${className}`}
     >
       {title && (
-        <header className="mb-3 flex items-center gap-2">
-          {Icon && <Icon className="size-4 text-primary" aria-hidden="true" />}
-          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        <header className="mb-4 flex items-center gap-2">
+          {Icon && <Icon className="size-4 text-[#3c85ff]" aria-hidden="true" />}
+          <h2 className="text-base sm:text-lg font-semibold text-white">{title}</h2>
         </header>
       )}
       {children}
@@ -309,8 +302,8 @@ export default function StockPage() {
 
   const [timeframe, setTimeframe] = useState("1d")
   const [quantity, setQuantity] = useState(1);
-  const [message,setmessage]=useState("");
-
+  const [message, setmessage] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isUp = stock.changePercent >= 0
   const changeTone = isUp ? "gain" : "loss"
@@ -328,233 +321,270 @@ export default function StockPage() {
   const positionUp = unrealizedPnl >= 0
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-5 sm:px-6 lg:py-8">
-      {/* Top bar */}
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard")}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          <span>Markets</span>
-        </button>
+    <div className="min-h-screen bg-[#080e19] text-white">
+      <div className="flex min-h-screen">
+        <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-        <div>
-          <span>{MarketStatus()}</span>
-        </div>
-      </div>
+        {menuOpen && (
+          <button
+            className="fixed inset-0 z-20 bg-black/50 lg:hidden"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close sidebar overlay"
+          />
+        )}
 
-      {/* Identity + price */}
-      <header className="mb-5 flex flex-col gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-mono text-3xl font-bold tracking-tight text-foreground">
-              {stock.symbol}
-            </h1>
-            <span className="rounded-md border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-              NASDAQ
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground">{stock.name}</p>
-        </div>
+        <main className="min-w-0 flex-1">
+          {/* Header */}
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setMenuOpen(true)}
+                className="text-[#8292ac] lg:hidden"
+                aria-label="Open menu"
+              >
+                <Menu size={20} />
+              </button>
 
-        <div className="flex flex-col gap-1 sm:items-end">
-          <div className="flex items-baseline gap-1">
-            <span className="font-mono text-4xl font-bold tabular-nums text-foreground">
-              {fmtMoney(stock.price)}
-            </span>
-          </div>
-          <div
-            className={`inline-flex items-center gap-1.5 font-mono text-sm font-semibold tabular-nums ${
-              isUp ? "text-gain" : "text-loss"
-            }`}
-          >
-            <ChangeIcon className="size-4" aria-hidden="true" />
-            <span>
-              {isUp ? "+" : ""}
-              {stock.change}
-            </span>
-            <span>
-              ({isUp ? "+" : ""}
-              {stock.changePercent}%)
-            </span>
-          </div>
-        </div>
-      </header>
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="text-[#8292ac] hover:text-white"
+                aria-label="Go back"
+              >
+                <ArrowLeft size={18} />
+              </button>
 
-      {/* Chart + trade layout */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Chart column */}
-        <div className="flex flex-col gap-5 lg:col-span-2">
-          <Panel className="!p-0 overflow-hidden">
-            {/* Chart header: OHLC + timeframe */}
-            <div className="flex flex-col gap-4 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="grid grid-cols-4 gap-4">
-                <OhlcCell label="Open" value={fmtNum(cursordata.open || stock.ohlc.open)} />
-                <OhlcCell label="High" value={fmtNum(cursordata.high || stock.ohlc.high)} tone="gain" />
-                <OhlcCell label="Low" value={fmtNum(cursordata.low || stock.ohlc.low)} tone="loss" />
-                <OhlcCell
-                  label="Close"
-                  value={fmtNum(cursordata.close || stock.ohlc.close)}
-                  tone={changeTone}
-                />
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                  Stock Details
+                </h1>
+                <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
+                  Real-time market chart, position breakdown, and order execution.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              {MarketStatus()}
+            </div>
+          </header>
+
+          <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
+
+            {/* Identity + price */}
+            <section className="flex flex-col gap-4 rounded-md border border-[#1f3155] bg-[#121b30] p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h2 className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                    {stock.symbol}
+                  </h2>
+                  <span className="rounded-md border border-[#3c85ff]/30 bg-[#3c85ff]/10 px-2 py-0.5 text-xs font-semibold text-[#3c85ff]">
+                    NASDAQ
+                  </span>
+                </div>
+                <p className="text-sm text-[#71829d]">{stock.name}</p>
               </div>
 
-              <div className="flex items-center gap-1 rounded-lg border border-border bg-secondary/50 p-1">
-                {TIMEFRAMES.map((tf) => (
-                  <button
-                    key={tf.id}
-                    type="button"
-                    onClick={() => setTimeframe(tf.id)}
-                    className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                      timeframe === tf.id
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                    aria-pressed={timeframe === tf.id}
+              <div className="flex flex-col gap-1 sm:items-end">
+                <div className="flex items-baseline gap-1">
+                  <span className="font-mono text-3xl sm:text-4xl font-bold tabular-nums text-white">
+                    {fmtMoney(stock.price)}
+                  </span>
+                </div>
+                <div
+                  className={`inline-flex items-center gap-1.5 font-mono text-sm font-semibold tabular-nums ${
+                    isUp ? "text-gain" : "text-loss"
+                  }`}
+                >
+                  <ChangeIcon className="size-4" aria-hidden="true" />
+                  <span>
+                    {isUp ? "+" : ""}
+                    {stock.change}
+                  </span>
+                  <span>
+                    ({isUp ? "+" : ""}
+                    {stock.changePercent}%)
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            {/* Chart + trade layout */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* Chart column */}
+              <div className="flex flex-col gap-6 lg:col-span-2">
+                <Panel className="!p-0 overflow-hidden">
+                  {/* Chart header: OHLC + timeframe */}
+                  <div className="flex flex-col gap-4 border-b border-[#1f3155] p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                      <OhlcCell label="Open" value={fmtNum(cursordata.open || stock.ohlc.open)} />
+                      <OhlcCell label="High" value={fmtNum(cursordata.high || stock.ohlc.high)} tone="gain" />
+                      <OhlcCell label="Low" value={fmtNum(cursordata.low || stock.ohlc.low)} tone="loss" />
+                      <OhlcCell
+                        label="Close"
+                        value={fmtNum(cursordata.close || stock.ohlc.close)}
+                        tone={changeTone}
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1 rounded-md border border-[#1f3155] bg-[#080e19] p-1">
+                      {TIMEFRAMES.map((tf) => (
+                        <button
+                          key={tf.id}
+                          type="button"
+                          onClick={() => setTimeframe(tf.id)}
+                          className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+                            timeframe === tf.id
+                              ? "bg-[#3c85ff] text-white"
+                              : "text-[#71829d] hover:text-white"
+                          }`}
+                          aria-pressed={timeframe === tf.id}
+                        >
+                          {tf.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Candlestick chart placeholder */}
+                  <div ref={chartref}
+                    id="tv-lightweight-chart"
+                    className="relative w-full h-[320px] bg-[#080e19] sm:h-[420px]"
+                    role="img"
                   >
-                    {tf.label}
-                  </button>
-                ))}
+                    <span className="absolute bottom-3 right-4 font-mono text-[11px] uppercase tracking-wide text-[#71829d]">
+                      {timeframe === "1h" ? "1 Hour" : "1 Day"} · {stock.symbol}
+                    </span>
+                  </div>
+                </Panel>
+
+                {/* Market details */}
+                <Panel title="Market Details" icon={Activity}>
+                  <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                    <StatRow label="Open" value={fmtMoney(stock.market.open)} />
+                    <StatRow
+                      label="High"
+                      value={fmtMoney(stock.ohlc.high)}
+                      tone="gain"
+                    />
+                    <StatRow
+                      label="Low"
+                      value={fmtMoney(stock.ohlc.low)}
+                      tone="loss"
+                    />
+                    <StatRow
+                      label="Previous Close"
+                      value={fmtMoney(stock.market.prevClose)}
+                    />
+                  </div>
+                </Panel>
+              </div>
+
+              {/* Sidebar: position + trade */}
+              <div className="flex flex-col gap-6">
+                {/* Your Position */}
+                <Panel title="Your Position" icon={TrendingUp}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-sm text-[#71829d]">Status</span>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        positionUp ? "bg-gain/15 text-gain" : "bg-loss/15 text-loss"
+                      }`}
+                    >
+                      {positionUp ? "In Profit" : "At Loss"}
+                    </span>
+                  </div>
+                  <StatRow label="Quantity" value={`${posQty} shares`} />
+                  <StatRow label="Average Cost" value={fmtMoney(avgCost)} />
+                  <StatRow label="Current Value" value={fmtMoney(currentValue)} />
+                  <StatRow
+                    label="Unrealized P/L"
+                    value={`${unrealizedPnl >= 0 ? "+" : ""}${fmtMoney(
+                      unrealizedPnl,
+                    )} (${unrealizedPnl >= 0 ? "+" : ""}${unrealizedPnlPct.toFixed(
+                      2,
+                    )}%)`}
+                    tone={positionUp ? "gain" : "loss"}
+                  />
+                </Panel>
+
+                {/* Trade */}
+                <Panel title="Trade" icon={CandlestickChart}>
+                  <label
+                    htmlFor="quantity"
+                    className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#71829d]"
+                  >
+                    Quantity
+                  </label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(Number.parseInt(e.target.value, 10) || 0)
+                    }
+                    className="mb-4 w-full rounded-md border border-[#1f3155] bg-[#080e19] px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-[#3c85ff]"
+                  />
+
+                  <div className="mb-4 flex items-center justify-between rounded-md border border-[#1f3155] bg-[#080e19] px-3 py-2.5">
+                    <span className="text-sm text-[#71829d]">
+                      Estimated {qty > 0 ? "value" : "cost"}
+                    </span>
+                    <span className="font-mono text-sm font-semibold text-white">
+                      {fmtMoney(estimatedCost)}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={executeBuy}
+                      type="button"
+                      className="rounded-md bg-[#0d5b35] border border-[#18a957] px-4 py-2.5 text-sm font-semibold text-[#35d47a] transition hover:bg-[#126b40]"
+                    >
+                      Buy
+                    </button>
+                    <button
+                      onClick={executeSell}
+                      type="button"
+                      className="rounded-md bg-[#661f2a] border border-[#d43a4b] px-4 py-2.5 text-sm font-semibold text-[#ff7d89] transition hover:bg-[#782633]"
+                    >
+                      Sell
+                    </button>
+                  </div>
+                </Panel>
+
+                <div className={`${message===""?"hidden":""} flex items-center justify-between rounded-md border border-[#1f3155] bg-[#121b30] px-4 py-3`}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-white">
+                      {message}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Connection status */}
+                <div className="flex items-center justify-between rounded-md border border-[#1f3155] bg-[#121b30] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex size-2">
+                      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gain opacity-75" />
+                      <span className="relative inline-flex size-2 rounded-full bg-gain" />
+                    </span>
+                    <span className="text-xs font-medium text-white">
+                      Market data connected
+                    </span>
+                  </div>
+                  <span className="font-mono text-[11px] text-[#71829d]">
+                    Real-time
+                  </span>
+                </div>
+                
               </div>
             </div>
 
-            {/* Candlestick chart placeholder */}
-            <div ref={chartref}
-              id="tv-lightweight-chart"
-              className="relative w-full h-[320px] bg-[linear-gradient(to_right,color-mix(in_oklab,var(--border)_40%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--border)_40%,transparent)_1px,transparent_1px)] bg-[size:44px_44px] sm:h-[420px]"
-              role="img"
-            >
-              <span className="absolute bottom-3 right-4 font-mono text-[11px] uppercase tracking-wide text-muted-foreground/60">
-                {timeframe === "1h" ? "1 Hour" : "1 Day"} · {stock.symbol}
-              </span>
-            </div>
-          </Panel>
-
-          {/* Market details */}
-          <Panel title="Market Details" icon={Activity}>
-            <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
-              <StatRow label="Open" value={fmtMoney(stock.market.open)} />
-              <StatRow
-                label="High"
-                value={fmtMoney(stock.ohlc.high)}
-                tone="gain"
-              />
-              <StatRow
-                label="Low"
-                value={fmtMoney(stock.ohlc.low)}
-                tone="loss"
-              />
-              <StatRow
-                label="Previous Close"
-                value={fmtMoney(stock.market.prevClose)}
-              />
-            </div>
-          </Panel>
-        </div>
-
-        {/* Sidebar: position + trade */}
-        <div className="flex flex-col gap-5">
-          {/* Your Position */}
-          <Panel title="Your Position" icon={TrendingUp}>
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Status</span>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                  positionUp ? "bg-gain/15 text-gain" : "bg-loss/15 text-loss"
-                }`}
-              >
-                {positionUp ? "In Profit" : "At Loss"}
-              </span>
-            </div>
-            <StatRow label="Quantity" value={`${posQty} shares`} />
-            <StatRow label="Average Cost" value={fmtMoney(avgCost)} />
-            <StatRow label="Current Value" value={fmtMoney(currentValue)} />
-            <StatRow
-              label="Unrealized P/L"
-              value={`${unrealizedPnl >= 0 ? "+" : ""}${fmtMoney(
-                unrealizedPnl,
-              )} (${unrealizedPnl >= 0 ? "+" : ""}${unrealizedPnlPct.toFixed(
-                2,
-              )}%)`}
-              tone={positionUp ? "gain" : "loss"}
-            />
-          </Panel>
-
-          {/* Trade */}
-          <Panel title="Trade" icon={CandlestickChart}>
-            <label
-              htmlFor="quantity"
-              className="mb-1.5 block text-xs font-medium text-muted-foreground"
-            >
-              Quantity
-            </label>
-            <input
-              id="quantity"
-              type="number"
-              min={1}
-              step={1}
-              value={quantity}
-              onChange={(e) =>
-                setQuantity(Number.parseInt(e.target.value, 10) || 0)
-              }
-              className="mb-4 w-full rounded-lg border border-input bg-secondary/40 px-3 py-2.5 font-mono text-sm text-foreground tabular-nums outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30"
-            />
-
-            <div className="mb-4 flex items-center justify-between rounded-lg border border-border bg-secondary/40 px-3 py-2.5">
-              <span className="text-sm text-muted-foreground">
-                Estimated {qty > 0 ? "value" : "cost"}
-              </span>
-              <span className="font-mono text-sm font-semibold tabular-nums text-foreground">
-                {fmtMoney(estimatedCost)}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={executeBuy}
-                type="button"
-                className="rounded-lg bg-gain px-4 py-2.5 text-sm font-semibold text-gain-foreground transition-opacity hover:opacity-90"
-              >
-                Buy
-              </button>
-              <button
-                onClick={executeSell}
-                type="button"
-                className="rounded-lg bg-loss px-4 py-2.5 text-sm font-semibold text-loss-foreground transition-opacity hover:opacity-90"
-              >
-                Sell
-              </button>
-            </div>
-          </Panel>
-
-          <div className={`${message===""?"hidden":""} flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3`}>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-foreground">
-                {message}
-              </span>
-            </div>
           </div>
-
-          {/* Connection status */}
-          <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-gain opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-gain" />
-              </span>
-              <span className="text-xs font-medium text-foreground">
-                Market data connected
-              </span>
-            </div>
-            <span className="font-mono text-[11px] text-muted-foreground">
-              Real-time
-            </span>
-          </div>
-          
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
   )
 }

@@ -28,40 +28,40 @@ function App() {
     <Routes>
       <Route path="/" element={
         <ProtectedRoute>
-        <Navigate to="/dashboard" replace />
-        </ProtectedRoute>
-      } />
-        
-       <Route
-        path="/dashboard"
-        element={
-            <ProtectedRoute>
-            <Dashboard />
-            </ProtectedRoute>
-        }
-      />
-
-      <Route path="/order-engine" 
-      element={
-        <ProtectedRoute>
-          <OrderEngine />
+          <Navigate to="/dashboard" replace />
         </ProtectedRoute>
       } />
 
       <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="/order-engine"
+        element={
+          <ProtectedRoute>
+            <OrderEngine />
+          </ProtectedRoute>
+        } />
+
+      <Route
         path="/transactions"
         element={
-            <ProtectedRoute>
+          <ProtectedRoute>
             <Transactions />
-            </ProtectedRoute>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/backtest"
         element={
-            <ProtectedRoute>
+          <ProtectedRoute>
             <BacktestingPage />
-            </ProtectedRoute>
+          </ProtectedRoute>
         }
       />
 
@@ -72,7 +72,7 @@ function App() {
 
       <Route path="/stocks/:symbol" element={
         <ProtectedRoute>
-        <StockPage/>
+          <StockPage />
         </ProtectedRoute>
       } />
 
@@ -81,7 +81,7 @@ function App() {
 
       <Route path="/portfolio" element={
         <ProtectedRoute>
-        <PortfolioPage />
+          <PortfolioPage />
         </ProtectedRoute>
       } />
 

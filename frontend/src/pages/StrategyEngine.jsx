@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Menu } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 
 const API_URL = "http://localhost:5000/app/api/strategies";
@@ -22,6 +23,7 @@ const ACTIONS = ["BUY", "SELL"];
 function StrategyEngine() {
   const [strategies, setStrategies] = useState([]);
   const [selectedStrategy, setSelectedStrategy] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -319,65 +321,77 @@ function StrategyEngine() {
   // --------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-[#080f1d] text-[#f1f5fb]">
+    <div className="min-h-screen bg-[#080e19] text-white">
       <div className="flex min-h-screen">
 
         {/* Sidebar */}
-        <Sidebar />
+        <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+        {menuOpen && (
+          <button
+            className="fixed inset-0 z-20 bg-black/50 lg:hidden"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close sidebar overlay"
+          />
+        )}
 
         {/* Main Content */}
-        <main className="min-w-0 flex-1 overflow-x-hidden">
-          <div className="mx-auto max-w-[1600px] px-5 py-6 md:px-8 lg:px-10">
+        <main className="min-w-0 flex-1">
+          <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="text-[#8292ac] lg:hidden"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
 
-            {/* Header */}
-            <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                Strategy Engine
+              </h1>
 
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-[#f5f7fb] md:text-4xl">
-                  Strategy Engine
-                </h1>
-
-                <p className="mt-1 text-sm text-[#71819e] md:text-base">
-                  Create and manage your trading strategies.
-                </p>
-              </div>
-
-              <div className="flex w-fit items-center gap-2 rounded-md border border-[#155236] bg-[#09251b] px-3 py-2">
-                <span className="h-2 w-2 rounded-full bg-[#20d477]" />
-                <span className="text-sm font-medium text-[#20d477]">
-                  Market Connected
-                </span>
-              </div>
+              <p className="mt-1 text-xs sm:text-sm text-[#71829d]">
+                Create and manage your trading strategies.
+              </p>
             </div>
+
+            <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">
+              <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]" />
+              Market Connected
+            </div>
+          </header>
+
+          <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
             {/* Notifications */}
             {error && (
-              <div className="mb-5 rounded-md border border-[#642d35] bg-[#251218] px-4 py-3 text-sm text-[#ff6576]">
+              <div className="rounded-md border border-[#7f2935] bg-[#421820] px-4 py-3 text-sm text-[#ff8692]">
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="mb-5 rounded-md border border-[#155236] bg-[#09251b] px-4 py-3 text-sm text-[#20d477]">
+              <div className="rounded-md border border-[#176b42] bg-[#0c3928] px-4 py-3 text-sm text-gain">
                 {success}
               </div>
             )}
 
             {/* Top Section */}
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
 
               {/* ======================================
                   CREATE STRATEGY
               ====================================== */}
 
-              <section className="rounded-lg border border-[#1b3153] bg-[#0d1729] shadow-sm">
+              <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
-                <div className="border-b border-[#1b3153] px-5 py-4">
-                  <h2 className="text-lg font-semibold text-[#f1f5fb]">
+                <div className="border-b border-[#1f3155] px-5 py-4">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Create Strategy
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#71819e]">
+                  <p className="mt-1 text-xs text-[#71829d]">
                     Configure a rule-based trading strategy.
                   </p>
                 </div>
@@ -596,14 +610,14 @@ function StrategyEngine() {
                   STRATEGY DETAILS
               ====================================== */}
 
-              <section className="rounded-lg border border-[#1b3153] bg-[#0d1729] shadow-sm">
+              <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
-                <div className="border-b border-[#1b3153] px-5 py-4">
-                  <h2 className="text-lg font-semibold text-[#f1f5fb]">
+                <div className="border-b border-[#1f3155] px-5 py-4">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     Strategy Details
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#71819e]">
+                  <p className="mt-1 text-xs text-[#71829d]">
                     View and manage the selected strategy.
                   </p>
                 </div>
@@ -760,16 +774,16 @@ function StrategyEngine() {
                 MY STRATEGIES
             ====================================== */}
 
-            <section className="mt-5 rounded-lg border border-[#1b3153] bg-[#0d1729] shadow-sm">
+            <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
-              <div className="flex flex-col gap-3 border-b border-[#1b3153] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 border-b border-[#1f3155] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <div>
-                  <h2 className="text-lg font-semibold text-[#f1f5fb]">
+                  <h2 className="text-base sm:text-lg font-semibold text-white">
                     My Strategies
                   </h2>
 
-                  <p className="mt-1 text-sm text-[#71819e]">
+                  <p className="mt-1 text-xs text-[#71829d]">
                     Your configured trading strategies.
                   </p>
                 </div>
@@ -781,7 +795,7 @@ function StrategyEngine() {
                       behavior: "smooth",
                     })
                   }
-                  className="w-fit rounded-md bg-[#367ff4] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4389f7]"
+                  className="w-fit rounded-md bg-[#3c85ff] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#3277eb]"
                 >
                   + New Strategy
                 </button>
