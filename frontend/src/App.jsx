@@ -11,6 +11,7 @@ import OrderEngine from "./pages/OrderEngine";
 import Transactions from "./pages/Transactions";
 import StrategyEngine from "./pages/StrategyEngine";
 import BacktestingPage from "./pages/Backtest/BacktestingPage";
+import DocumentationPage from "./pages/DocumentationPage";
 import "./App.css";
 
 function App() {
@@ -38,6 +39,14 @@ function App() {
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/documentation"
+        element={
+            <ProtectedRoute>
+            <DocumentationPage />
+            </ProtectedRoute>
         }
       />
 

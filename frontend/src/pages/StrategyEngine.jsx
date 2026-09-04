@@ -20,6 +20,45 @@ const INDICATORS = ["SMA", "RSI"];
 const OPERATORS = [">", "<"];
 const ACTIONS = ["BUY", "SELL"];
 
+function MarketStatus() {
+  const now = new Date();
+
+  const nyTime = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(now);
+
+  console.log(nyTime);
+
+  const [hour, minute] = nyTime.split(":").map(Number);
+
+  const isOpen =
+    (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
+
+  return (
+    <div
+      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${
+        isOpen
+          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+          : "border-red-500/30 bg-red-500/10 text-red-300"
+      }`}
+    >
+      <span
+        className={`size-2 rounded-full ${
+          isOpen
+            ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
+            : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
+        }`}
+      />
+
+      {isOpen ? "Market Open" : "Market Closed"}
+
+    </div>
+  );
+}
+
 function StrategyEngine() {
   const [strategies, setStrategies] = useState([]);
   const [selectedStrategy, setSelectedStrategy] = useState(null);
@@ -356,9 +395,9 @@ function StrategyEngine() {
               </p>
             </div>
 
-            <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">
-              <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]" />
-              Market Connected
+              <div>
+                {MarketStatus()}
+              </div>
             </div>
           </header>
 
