@@ -398,7 +398,6 @@ function StrategyEngine() {
               <div>
                 {MarketStatus()}
               </div>
-            </div>
           </header>
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
