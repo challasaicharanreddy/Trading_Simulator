@@ -1,4 +1,4 @@
-import MinuteCandles from "../models/MinuteCandles.js";
+import MinuteCandles from "../models/minuteCandles.js";
 import { evaluateStrategy } from "./strategyRunner.js";
 
 const Model2 = MinuteCandles;
