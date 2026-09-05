@@ -21,7 +21,6 @@ function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
   useEffect(() => {
     if (!socket) return;
 
-    // Subscribe to symbol rooms
     marketData.forEach((item) => socket.emit("subscribe", item.symbol));
   }, [socket, marketData]);
 

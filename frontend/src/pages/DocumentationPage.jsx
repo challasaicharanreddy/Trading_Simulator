@@ -69,7 +69,6 @@ export default function DocumentationPage() {
   const [docNavOpen, setDocNavOpen] = useState(false);
   const [active, setActive] = useState("introduction");
 
-  // Scroll spy to highlight active section in TOC as user scrolls
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 140;
@@ -109,10 +108,8 @@ export default function DocumentationPage() {
   return (
     <div className="min-h-screen bg-[#080e19] text-white">
       <div className="flex min-h-screen">
-        {/* Main Application Sidebar */}
         <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-        {/* Mobile overlay for Main Sidebar */}
         {menuOpen && (
           <button
             className="fixed inset-0 z-30 bg-black/60 lg:hidden"
@@ -121,9 +118,7 @@ export default function DocumentationPage() {
           />
         )}
 
-        {/* Main Content Area */}
         <main className="min-w-0 flex-1 flex flex-col">
-          {/* Top Header */}
           <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#182944] bg-[#080e19]/95 px-4 backdrop-blur sm:px-6 lg:px-8">
             <div className="flex items-center gap-3">
               <button
@@ -148,7 +143,6 @@ export default function DocumentationPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Button to open TOC drawer on mobile/tablet */}
               <button
                 onClick={() => setDocNavOpen(true)}
                 className="flex items-center gap-1.5 rounded-lg border border-[#233b63] bg-[#0f1b32] px-3 py-1.5 text-xs font-medium text-[#8ea5cc] transition-colors hover:border-[#3c78da] hover:text-white xl:hidden"
@@ -164,11 +158,8 @@ export default function DocumentationPage() {
             </div>
           </header>
 
-          {/* Main Documentation Body (Content + Table of Contents Sidebar) */}
           <div className="mx-auto flex w-full max-w-[1440px] gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10 xl:gap-12">
-            {/* Documentation Content */}
             <article className="min-w-0 flex-1 max-w-4xl">
-            {/* Page Heading */}
             <div className="mb-8 border-b border-[#1c2a45] pb-7">
               <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3d8bff]">
                 QUANT_X
@@ -185,7 +176,6 @@ export default function DocumentationPage() {
               </p>
             </div>
 
-            {/* Sections */}
             <Section
               id="introduction"
               number="01"
@@ -773,7 +763,6 @@ export default function DocumentationPage() {
             </footer>
           </article>
 
-          {/* RIGHT SIDE DOCUMENTATION NAVIGATION (Table of Contents) */}
           <aside className="hidden w-56 shrink-0 xl:block">
             <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
               <div className="mb-3 flex items-center gap-2">
@@ -814,17 +803,14 @@ export default function DocumentationPage() {
       </main>
     </div>
 
-      {/* Mobile Documentation Table of Contents Drawer */}
       {docNavOpen && (
         <div className="fixed inset-0 z-50 xl:hidden">
-          {/* Backdrop overlay */}
           <button
             className="fixed inset-0 bg-black/70 backdrop-blur-xs"
             onClick={() => setDocNavOpen(false)}
             aria-label="Close table of contents"
           />
 
-          {/* Drawer Content */}
           <aside className="fixed inset-y-0 right-0 z-50 flex w-80 max-w-[85vw] flex-col border-l border-[#1e365f] bg-[#0b1222] p-5 shadow-2xl">
             <div className="mb-5 flex items-center justify-between border-b border-[#1c2e4f] pb-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-white">

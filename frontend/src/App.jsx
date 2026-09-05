@@ -1,7 +1,4 @@
-import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-// import { useAuth } from "./context/AuthContext";
-import { setupInterceptors } from "./api/axiosInstance";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthPage from "./pages/AuthPage";
 import StockPage from "./pages/Stockpage";
@@ -15,15 +12,6 @@ import DocumentationPage from "./pages/DocumentationPage";
 import "./App.css";
 
 function App() {
-  // const { accessToken, refreshAccessToken, logout } = useAuth();
-
-  // useEffect(() => {
-  //   setupInterceptors(
-  //     () => accessToken,
-  //     refreshAccessToken,
-  //     () => logout()
-  //   );
-  // }, [accessToken]);
 
   return (
     <Routes>
@@ -76,7 +64,11 @@ function App() {
 
       <Route
         path="/strategy-engine"
-        element={<StrategyEngine />}
+        element={
+        <ProtectedRoute>
+            <StrategyEngine/>
+          </ProtectedRoute>
+      }
       />
 
       <Route path="/stocks/:symbol" element={

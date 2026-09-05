@@ -48,7 +48,6 @@ export default function Results({
   return (
     <section className="space-y-6">
 
-      {/* Results Header */}
       <div className="flex items-center justify-between">
 
         <div>
@@ -75,7 +74,6 @@ export default function Results({
 
       </div>
 
-      {/* No Results */}
       {!results ? (
         <div className="grid min-h-[220px] place-items-center rounded-md border border-dashed border-[#1f3155] bg-[#121b30] p-8 text-center">
 
@@ -99,10 +97,8 @@ export default function Results({
         </div>
       ) : (
 
-        /* Results Available */
         <div className="space-y-6">
 
-          {/* Metrics */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 sm:gap-4">
 
             <Metric
@@ -178,7 +174,6 @@ export default function Results({
 
           </div>
 
-          {/* Equity Curve */}
           <div className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
             <h3 className="mb-4 text-base sm:text-lg font-semibold text-white">
@@ -263,10 +258,8 @@ export default function Results({
 
           </div>
 
-          {/* Trade History */}
           <div className="overflow-hidden rounded-md border border-[#1f3155] bg-[#121b30]">
 
-            {/* Table Header */}
             <div className="border-b border-[#1f3155] px-5 py-4">
 
               <h3 className="text-base sm:text-lg font-semibold text-white">
@@ -275,7 +268,6 @@ export default function Results({
 
             </div>
 
-            {/* Table */}
             <div className="overflow-x-auto">
 
               <table className="w-full min-w-[700px] border-collapse text-left">
@@ -335,22 +327,18 @@ export default function Results({
 
                       </td>
 
-                      {/* Symbol */}
                       <td className="px-4 py-3 font-mono text-sm font-semibold text-white">
                         {trade.symbol}
                       </td>
 
-                      {/* Quantity */}
                       <td className="px-4 py-3 font-mono text-sm">
                         {trade.quantity}
                       </td>
 
-                      {/* Price */}
                       <td className="px-4 py-3 font-mono text-sm">
                         ${trade.price}
                       </td>
 
-                      {/* P&L */}
                       <td
                         className={`px-4 py-3 font-mono text-sm font-semibold ${
                           trade.pnl === "-"
