@@ -64,10 +64,12 @@ router.post("/login",async (req,res)=>{
             expiresIn: "1d"
         }
     );
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("accessToken", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         maxAge: 24 * 60 * 60 * 1000
     });
 
@@ -78,7 +80,12 @@ router.post("/login",async (req,res)=>{
 
 router.post("/logout",(req,res)=>{
     console.log("req hit");
-    res.clearCookie("accessToken");
+    const isProduction = process.env.NODE_ENV === "production";
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax"
+    });
 
     return res.status(200).json({
         message:"User logged out successfully"
