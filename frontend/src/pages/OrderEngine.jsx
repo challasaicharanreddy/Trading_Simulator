@@ -75,7 +75,6 @@ function MarketStatus() {
     hour12: false,
   }).format(now);
 
-  console.log(nyTime);
 
   const [hour, minute] = nyTime.split(":").map(Number);
 
@@ -126,9 +125,6 @@ function OrderEngine() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  /*
-   * Subscribe to the selected stock and receive live prices.
-   */
   useEffect(() => {
     if (!socket) return;
 
@@ -151,10 +147,6 @@ function OrderEngine() {
     };
   }, [socket, selectedSymbol]);
 
-  /*
-   * Fetch portfolio metrics.
-   * We mainly need available cash here.
-   */
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
@@ -178,9 +170,6 @@ function OrderEngine() {
     fetchMetrics();
   }, []);
 
-  /*
-   * Fetch recent executed orders.
-   */
   const fetchRecentOrders = async () => {
     try {
       setOrdersLoading(true);
@@ -204,26 +193,14 @@ function OrderEngine() {
     fetchRecentOrders();
   }, []);
 
-  /*
-   * Current selected stock.
-   */
   const selectedStock = useMemo(() => {
     return marketData[selectedSymbol];
   }, [marketData, selectedSymbol]);
 
-  /*
-   * Numeric current price.
-   */
   const currentPrice = Number(selectedStock?.close ?? 0);
 
-  /*
-   * Estimated order value.
-   */
   const estimatedValue = currentPrice * Number(quantity || 0);
 
-  /*
-   * Handle quantity changes.
-   */
   const handleQuantityChange = (event) => {
     const value = event.target.value;
 
@@ -239,9 +216,6 @@ function OrderEngine() {
     }
   };
 
-  /*
-   * Submit BUY / SELL order.
-   */
   const handlePlaceOrder = async () => {
     setOrderError(null);
     setOrderSuccess(null);
@@ -287,15 +261,11 @@ function OrderEngine() {
         }
       );
 
-      console.log("Order executed:", response.data);
 
       setOrderSuccess(
         `${action} order for ${numericQuantity} ${selectedSymbol} shares executed successfully.`
       );
 
-      /*
-       * Refresh portfolio cash after execution.
-       */
       try {
         const metricsResponse = await axios.get(
           "http://localhost:5000/app/portfolio/metrics",
@@ -309,13 +279,9 @@ function OrderEngine() {
         console.error("Failed to refresh cash:", error);
       }
 
-      /*
-       * Refresh recent orders.
-       */
       await fetchRecentOrders();
 
     } catch (error) {
-      console.error("Order execution failed:", error);
 
       setOrderError(
         error.response?.data?.error ||
@@ -330,8 +296,6 @@ function OrderEngine() {
     <div className="min-h-screen bg-[#080e19] text-white">
       <div className="flex min-h-screen">
 
-        {/* SIDEBAR */}
-
         <Sidebar
           open={menuOpen}
           onClose={() => setMenuOpen(false)}
@@ -345,11 +309,8 @@ function OrderEngine() {
           />
         )}
 
-        {/* MAIN */}
-
         <main className="min-w-0 flex-1">
 
-          {/* HEADER */}
 
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
@@ -377,15 +338,12 @@ function OrderEngine() {
 
           </header>
 
-          {/* CONTENT */}
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* TOP SECTION */}
 
             <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
 
-              {/* PLACE ORDER */}
 
               <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
@@ -401,7 +359,6 @@ function OrderEngine() {
 
                 <div className="mt-6 space-y-5">
 
-                  {/* SYMBOL */}
 
                   <div>
                     <label className="mb-2 block text-xs uppercase tracking-wider text-[#71829d]">
@@ -428,8 +385,6 @@ function OrderEngine() {
                     </select>
                   </div>
 
-                  {/* CURRENT PRICE */}
-
                   <div>
                     <p className="mb-2 text-xs uppercase tracking-wider text-[#71829d]">
                       Current Price
@@ -442,7 +397,6 @@ function OrderEngine() {
                     </div>
                   </div>
 
-                  {/* ACTION */}
 
                   <div>
                     <p className="mb-2 text-xs uppercase tracking-wider text-[#71829d]">
@@ -486,7 +440,6 @@ function OrderEngine() {
                     </div>
                   </div>
 
-                  {/* QUANTITY */}
 
                   <div>
                     <label className="mb-2 block text-xs uppercase tracking-wider text-[#71829d]">
@@ -511,7 +464,6 @@ function OrderEngine() {
                     </div>
                   </div>
 
-                  {/* CALCULATIONS */}
 
                   <div className="border-t border-[#1f3155] pt-4">
 
@@ -545,7 +497,6 @@ function OrderEngine() {
 
                   </div>
 
-                  {/* CONFIRMATION */}
 
                   <div className="rounded-md border border-[#263c73] bg-[#172852] px-3 py-3 text-xs text-white">
 
@@ -576,7 +527,6 @@ function OrderEngine() {
 
                   </div>
 
-                  {/* ERROR */}
 
                   {orderError && (
                     <div className="rounded-md border border-[#7f2935] bg-[#421820] px-3 py-3 text-sm text-[#ff8692]">
@@ -584,7 +534,6 @@ function OrderEngine() {
                     </div>
                   )}
 
-                  {/* SUCCESS */}
 
                   {orderSuccess && (
                     <div className="rounded-md border border-[#176b42] bg-[#0c3928] px-3 py-3 text-sm text-gain">
@@ -592,7 +541,6 @@ function OrderEngine() {
                     </div>
                   )}
 
-                  {/* PLACE ORDER */}
 
                   <button
                     type="button"
@@ -609,11 +557,9 @@ function OrderEngine() {
 
               </section>
 
-              {/* RIGHT SIDE */}
 
               <div className="space-y-5">
 
-                {/* ORDER SUMMARY */}
 
                 <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
@@ -767,7 +713,6 @@ function OrderEngine() {
 
             </div>
 
-            {/* RECENT ORDERS */}
 
             <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
@@ -792,7 +737,6 @@ function OrderEngine() {
 
               </div>
 
-              {/* TABLE HEADER */}
 
               <div className="mt-5 hidden grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-4 border-b border-[#1f3155] px-3 pb-3 text-xs uppercase tracking-wider text-[#71829d] md:grid">
 
@@ -805,7 +749,6 @@ function OrderEngine() {
 
               </div>
 
-              {/* ORDERS */}
 
               <div className="mt-2">
 

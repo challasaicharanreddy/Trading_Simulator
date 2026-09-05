@@ -18,7 +18,6 @@ function MarketStatus() {
     minute: "2-digit",
     hour12: false,
   }).format(now);
-  console.log(nyTime)
   const [hour, minute] = nyTime.split(":").map(Number);
 
   const isOpen =
@@ -117,7 +116,6 @@ export default function DashboardPage() {
   const [selected, setSelected] = useState("AAPL");
   const [marketData, setMarketData] = useState(watchlist);
   const [activity, setActivity] = useState([]);
-  const [portfolioPerformance, setPortfolioPerformance] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [metrics, setMetrics] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(true);
@@ -126,7 +124,6 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!socket) return;
 
-    // Subscribe to symbol rooms
     marketData.forEach((item) => socket.emit("subscribe", item.symbol));
 
     const handlePriceChange = (UpdatedData) => {
@@ -223,18 +220,9 @@ export default function DashboardPage() {
                 withCredentials: true,
               }
             );
-
-
-          console.log(
-            "Recent activity:",
-            response.data
-          );
-
-
           setActivity(
             response.data
           );
-
 
         } catch (error) {
 
@@ -339,7 +327,6 @@ export default function DashboardPage() {
             <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
               <PortfolioPerformanceCard />
 
-              {/* RECENT ACTIVITY */}
               <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
                 <div className="flex items-center justify-between">
                   <div>
@@ -360,7 +347,6 @@ export default function DashboardPage() {
                   </Link>
                 </div>
 
-                {/* TRANSACTIONS */}
 
                 <div className="mt-5 space-y-4">
 
@@ -385,7 +371,6 @@ export default function DashboardPage() {
                           className="grid grid-cols-[52px_52px_1fr_80px] items-center gap-3"
                         >
 
-                          {/* BUY / SELL */}
 
                           <span
                             className={`rounded-md px-2 py-1 text-center text-[10px] font-bold ${isBuy
@@ -397,22 +382,17 @@ export default function DashboardPage() {
                           </span>
 
 
-                          {/* SYMBOL */}
 
                           <span className="font-semibold text-white">
                             {transaction.symbol}
                           </span>
 
 
-                          {/* ORDER DETAILS */}
-
                           <span className="font-mono text-xs text-white">
                             {transaction.quantity} shares @ $
                             {Number(transaction.price).toFixed(2)}
                           </span>
 
-
-                          {/* TIME */}
 
                           <span className="whitespace-nowrap text-right text-xs text-[#71829d]">
                             {formatRelativeTime(

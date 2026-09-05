@@ -67,7 +67,6 @@ export default function Condition({
 
       <div className="grid gap-3 md:grid-cols-3">
 
-        {/* Indicator */}
         <Field label="Indicator">
           <Select
             value={indicator}
@@ -78,7 +77,6 @@ export default function Condition({
           </Select>
         </Field>
 
-        {/* Operator */}
         <Field label="Operator">
           <Select
             value={operator}
@@ -89,7 +87,6 @@ export default function Condition({
           </Select>
         </Field>
 
-        {/* Threshold */}
         <Field label="Threshold">
           <Input
             type="number"
