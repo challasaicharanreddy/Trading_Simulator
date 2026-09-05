@@ -2,7 +2,7 @@
 import dotenv from "dotenv";
 import connectdb from "../config/db.js";
 import mongoose from "mongoose";
-import MinuteCandle from "../models/minuteCandles.js";
+// import MinuteCandle from "../models/minuteCandles";
 
 dotenv.config();
 

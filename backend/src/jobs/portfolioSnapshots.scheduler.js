@@ -12,7 +12,7 @@ function startPortfolioSnapshotScheduler() {
       takeSnapshotsForAllUsers();
     },
     {
-      timezone: "America/New_York", // critical — ties the schedule to US market hours regardless of your server's own timezone
+      timezone: "America/New_York",
     }
   );
 
