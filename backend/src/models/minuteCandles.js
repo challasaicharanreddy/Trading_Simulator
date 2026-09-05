@@ -39,4 +39,8 @@ candleSchema.index({
     timestamp:1
 })
 
-export default mongoose.model("MinuteCandle", candleSchema);
+const MinuteCandle =
+  mongoose.models.MinuteCandle ||
+  mongoose.model("MinuteCandle", candleSchema);
+
+export default MinuteCandle;
