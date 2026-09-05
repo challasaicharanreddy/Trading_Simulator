@@ -136,7 +136,7 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     const run = async () => {
-      const result = await axios.get("http://localhost:5000/app/portfolio", { withCredentials: true });
+      const result = await axios.get(`${import.meta.env.VITE_SERVER_URL}/app/portfolio`, { withCredentials: true });
       setholding_stats(result.data.holdings)
       setcash(result.data.cashBalance)
     }

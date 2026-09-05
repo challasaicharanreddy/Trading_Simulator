@@ -223,7 +223,7 @@ export default function DashboardPage() {
         setMetricsLoading(true);
 
         const response = await axios.get(
-          "http://localhost:5000/app/portfolio/metrics",
+          `${import.meta.env.VITE_SERVER_URL}/app/portfolio/metrics`,
           {
             withCredentials: true
           }
@@ -261,7 +261,7 @@ export default function DashboardPage() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/app/transactions/recent",
+              `${import.meta.env.VITE_SERVER_URL}/app/transactions/recent`,
               {
                 withCredentials: true,
               }

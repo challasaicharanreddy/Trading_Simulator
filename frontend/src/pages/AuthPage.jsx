@@ -56,7 +56,7 @@ export default function AuthPage() {
     setSubmitted(true)
     if(!isRegister) {
         try{
-            const reply=await axios.post(`http://localhost:5000/auth/login`,{
+            const reply=await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/login`,{
             email:form.email,
             password:form.password
             },{withCredentials:true});
@@ -75,7 +75,7 @@ export default function AuthPage() {
                 messageref.current.textContent="Confirm Password differs from Given Password. Check again!!"
                 return;
             }
-            const reply=await axios.post(`http://localhost:5000/auth/register`,{
+            const reply=await axios.post(`${import.meta.env.VITE_SERVER_URL}/auth/register`,{
                 username:form.name,
                 email:form.email,
                 password:form.password

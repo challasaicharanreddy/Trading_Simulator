@@ -150,8 +150,8 @@ export default function StockPage() {
     },[symbol,socket,isConnected]);
     useEffect(()=>{
         const call=async ()=>{
-            const result=await axios.post("http://localhost:5000/app/fetchprice/minuteCandles",{symbol:symbol,timeperiod:"1h"},{withCredentials:true});
-            const resultagain=await axios.post("http://localhost:5000/app/fetchprice/holdings",{symbol:symbol},{withCredentials:true})
+            const result=await axios.post(`${import.meta.env.VITE_SERVER_URL}/app/fetchprice/minuteCandles`,{symbol:symbol,timeperiod:"1h"},{withCredentials:true});
+            const resultagain=await axios.post(`${import.meta.env.VITE_SERVER_URL}/app/fetchprice/holdings`,{symbol:symbol},{withCredentials:true})
             const formattedData = result.data.map((item) => ({
                 time: Math.floor(new Date(item.timestamp).getTime() / 1000),
                 open: item.open,
@@ -233,7 +233,7 @@ export default function StockPage() {
 
   const executeBuy=async ()=>{
     try{
-      const res=await axios.post("http://localhost:5000/app/api/orders/buy",{symbol:symbol,quantity:quantity},{withCredentials:true})
+      const res=await axios.post(`${import.meta.env.VITE_SERVER_URL}/app/api/orders/buy`,{symbol:symbol,quantity:quantity},{withCredentials:true})
       if(res) {
         setmessage("Transaction Successful")
       }
@@ -247,7 +247,7 @@ export default function StockPage() {
   }
   const executeSell=async ()=>{
     try{
-      const res=await axios.post("http://localhost:5000/app/api/orders/sell",{symbol:symbol,quantity:quantity},{withCredentials:true})
+      const res=await axios.post(`${import.meta.env.VITE_SERVER_URL}/app/api/orders/sell`,{symbol:symbol,quantity:quantity},{withCredentials:true})
       if(res) {
         setmessage("Transaction Successful")
       }

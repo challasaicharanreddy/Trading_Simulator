@@ -152,7 +152,7 @@ export default function BacktestingPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/app/backtest/run",
+        `${import.meta.env.VITE_SERVER_URL}/app/backtest/run`,
         form,
         {
           withCredentials: true,

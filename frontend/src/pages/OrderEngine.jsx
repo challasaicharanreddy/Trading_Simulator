@@ -117,7 +117,7 @@ function OrderEngine() {
         setMetricsLoading(true);
 
         const response = await axios.get(
-          "http://localhost:5000/app/portfolio/metrics",
+          `${import.meta.env.VITE_SERVER_URL}/app/portfolio/metrics`,
           {
             withCredentials: true,
           }
@@ -139,7 +139,7 @@ function OrderEngine() {
       setOrdersLoading(true);
 
       const response = await axios.get(
-        "http://localhost:5000/app/api/orders/recent",
+        `${import.meta.env.VITE_SERVER_URL}/app/api/orders/recent`,
         {
           withCredentials: true,
         }
@@ -211,8 +211,8 @@ function OrderEngine() {
 
       const endpoint =
         action === "BUY"
-          ? "http://localhost:5000/app/api/orders/buy"
-          : "http://localhost:5000/app/api/orders/sell";
+          ? `${import.meta.env.VITE_SERVER_URL}/app/api/orders/buy`
+          : `${import.meta.env.VITE_SERVER_URL}/app/api/orders/sell`;
 
       const response = await axios.post(
         endpoint,
@@ -232,7 +232,7 @@ function OrderEngine() {
 
       try {
         const metricsResponse = await axios.get(
-          "http://localhost:5000/app/portfolio/metrics",
+          `${import.meta.env.VITE_SERVER_URL}/app/portfolio/metrics`,
           {
             withCredentials: true,
           }
