@@ -7,7 +7,7 @@ import { SocketInit } from "./config/socket.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 const httpServer = http.createServer(app);
 SocketInit(httpServer);

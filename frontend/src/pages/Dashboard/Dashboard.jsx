@@ -135,6 +135,85 @@ export default function DashboardPage() {
       socket.off("priceChange", handlePriceChange);
     };
   }, [socket]);
+
+    useEffect(() => {
+    const fetchLatestMarketData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/app/api/market/latest",
+          {
+            withCredentials: true,
+          }
+        );
+
+        const latestData = response.data;
+
+        setMarketData((prev) =>
+          prev.map((item) => {
+            const data = latestData.find(
+              (stock) => stock.symbol === item.symbol
+            );
+
+            if (!data) return item;
+
+            const rawChange = data.changePercent ?? 0;
+
+            const changeNum =
+              typeof rawChange === "number"
+                ? rawChange
+                : parseFloat(rawChange || 0);
+
+            const isLoss = changeNum < 0;
+
+            const formattedChange = `${
+              isLoss ? "" : "+"
+            }${changeNum.toFixed(2)}%`;
+
+            const rawPrice = parseFloat(data.close);
+
+            const formattedPrice = isNaN(rawPrice)
+              ? "--"
+              : `$${rawPrice.toFixed(2)}`;
+
+            return {
+              ...item,
+
+              price: formattedPrice,
+              change: formattedChange,
+              tone: isLoss ? "loss" : "gain",
+
+              open:
+                data.open != null
+                  ? `$${parseFloat(data.open).toFixed(2)}`
+                  : item.open,
+
+              high:
+                data.high != null
+                  ? `$${parseFloat(data.high).toFixed(2)}`
+                  : item.high,
+
+              low:
+                data.low != null
+                  ? `$${parseFloat(data.low).toFixed(2)}`
+                  : item.low,
+
+              previousClose:
+                data.previousClose != null
+                  ? `$${parseFloat(data.previousClose).toFixed(2)}`
+                  : item.previousClose,
+
+              chartData: item.chartData || [],
+            };
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch latest market data:", error);
+      }
+    };
+
+    fetchLatestMarketData();
+  }, []);
+
   useEffect(() => {
 
     const fetchMetrics = async () => {
