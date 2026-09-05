@@ -7,7 +7,7 @@ function PortfolioPerformanceCard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/app/portfolio/history",{withCredentials:true})
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/app/portfolio/history`,{withCredentials:true})
       .then((res) => {
         setPortfolioPerformance(res.data);
       })

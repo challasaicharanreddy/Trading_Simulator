@@ -12,7 +12,7 @@ export function SocketProvider({ children }) {
   useEffect(() => {
     if (isLoading) return;
 
-    const newSocket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
+    const newSocket = io(import.meta.env.VITE_SERVER_URL, {
       withCredentials: true,
     });
 

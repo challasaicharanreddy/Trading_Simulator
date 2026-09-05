@@ -172,7 +172,7 @@ export default function TransactionsPage() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/app/transactions/history",
+          `${import.meta.env.VITE_SERVER_URL}/app/transactions/history`,
           {
             withCredentials: true,
           }

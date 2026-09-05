@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import MarketStatus from "../components/MarketStatus";
 
-const API_URL = "http://localhost:5000/app/api/strategies";
+const API_URL = `${import.meta.env.VITE_SERVER_URL}/app/api/strategies`;
 
 const STOCKS = [
   "AAPL",

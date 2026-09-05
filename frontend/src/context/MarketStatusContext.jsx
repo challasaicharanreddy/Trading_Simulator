@@ -13,7 +13,7 @@ export function MarketStatusProvider({ children }) {
     const fetchMarketStatus = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:5000/app/api/market/status",
+                `${import.meta.env.VITE_SERVER_URL}/app/api/market/status`,
                 {
                     withCredentials: true
                 }
