@@ -1,5 +1,5 @@
 import MarketData from "../models/marketData.js";
-import MinuteCandles from "../models/MinuteCandles.js";
+import MinuteCandles from "../models/minuteCandles.js";
 import RedisClient from "../config/redis.js";
 
 const Model1=MarketData;
