@@ -10,6 +10,7 @@ import portfolioRoutes from "./routes/portfolio.routes.js";
 import backtestRoutes from "./routes/backtest.routes.js";
 import fetchStockPriceRoutes from "./routes/fetchStockPrice.routes.js"
 import transactionRoutes from "./routes/transactions.routes.js"
+import { getMarketStatus } from "./services/marketClock.js";
 
 const app=express();
 
@@ -29,6 +30,13 @@ app.use("/app/portfolio",portfolioRoutes);
 app.use("/app/backtest",backtestRoutes)
 app.use("/app/fetchprice",fetchStockPriceRoutes);
 app.use("/app/transactions",transactionRoutes);
+app.get("/app/api/market/status", (req, res) => {
+    const market = getMarketStatus();
+    res.json({
+        status: market.status,
+        open: market.open
+    });
+});
 app.get("/app/api/health",(req,res)=>{
     res.json({status:"ok"});
 });
