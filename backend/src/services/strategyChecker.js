@@ -1,5 +1,5 @@
 import Startegy from '../models/strategy.js';
-import MinuteCandles from '../models/MinuteCandles.js';
+import MinuteCandles from '../models/minuteCandles.js';
 import {evaluateStrategy} from './strategyRunner.js';
 import {executeBuyOrder, executeSellOrder} from './orderEngine.js';
 
