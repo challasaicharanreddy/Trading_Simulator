@@ -44,9 +44,6 @@ function StrategyEngine() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // --------------------------------------------------
-  // Fetch Strategies
-  // --------------------------------------------------
 
   const fetchStrategies = async () => {
     try {
@@ -61,7 +58,6 @@ function StrategyEngine() {
 
       setStrategies(data);
 
-      // Select first strategy if nothing is selected
       if (!selectedStrategy && data.length > 0) {
         setSelectedStrategy(data[0]);
       }
@@ -81,9 +77,6 @@ function StrategyEngine() {
     fetchStrategies();
   }, []);
 
-  // --------------------------------------------------
-  // Form Handling
-  // --------------------------------------------------
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,9 +96,6 @@ function StrategyEngine() {
     }));
   };
 
-  // --------------------------------------------------
-  // Create Strategy
-  // --------------------------------------------------
 
   const handleCreateStrategy = async (e) => {
     e.preventDefault();
@@ -172,7 +162,6 @@ function StrategyEngine() {
 
       setSuccess("Strategy created successfully");
 
-      // Reset form
       setForm({
         name: "",
         symbol: "AAPL",
@@ -184,7 +173,6 @@ function StrategyEngine() {
         quantity: 10,
       });
     } catch (err) {
-      console.error("Failed to create strategy:", err);
 
       setError(
         err.response?.data?.error ||
@@ -194,10 +182,6 @@ function StrategyEngine() {
       setLoading(false);
     }
   };
-
-  // --------------------------------------------------
-  // Activate / Deactivate
-  // --------------------------------------------------
 
   const updateStrategyStatus = async (
     strategy,
@@ -235,10 +219,6 @@ function StrategyEngine() {
           : "Strategy deactivated"
       );
     } catch (err) {
-      console.error(
-        "Failed to update strategy status:",
-        err
-      );
 
       setError(
         err.response?.data?.error ||
@@ -246,10 +226,6 @@ function StrategyEngine() {
       );
     }
   };
-
-  // --------------------------------------------------
-  // Delete Strategy
-  // --------------------------------------------------
 
   const handleDeleteStrategy = async (strategy) => {
     const confirmed = window.confirm(
@@ -285,10 +261,6 @@ function StrategyEngine() {
 
       setSuccess("Strategy deleted successfully");
     } catch (err) {
-      console.error(
-        "Failed to delete strategy:",
-        err
-      );
 
       setError(
         err.response?.data?.error ||
@@ -296,10 +268,6 @@ function StrategyEngine() {
       );
     }
   };
-
-  // --------------------------------------------------
-  // Helpers
-  // --------------------------------------------------
 
   const formatDate = (date) => {
     if (!date) return "--";
@@ -319,15 +287,10 @@ function StrategyEngine() {
     return `${strategy.indicator} ${strategy.operator} ${strategy.threshold}`;
   };
 
-  // --------------------------------------------------
-  // Render
-  // --------------------------------------------------
-
   return (
     <div className="min-h-screen bg-[#080e19] text-white">
       <div className="flex min-h-screen">
 
-        {/* Sidebar */}
         <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
 
         {menuOpen && (
@@ -338,7 +301,6 @@ function StrategyEngine() {
           />
         )}
 
-        {/* Main Content */}
         <main className="min-w-0 flex-1">
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
             <button
@@ -366,7 +328,6 @@ function StrategyEngine() {
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* Notifications */}
             {error && (
               <div className="rounded-md border border-[#7f2935] bg-[#421820] px-4 py-3 text-sm text-[#ff8692]">
                 {error}
@@ -382,9 +343,6 @@ function StrategyEngine() {
             {/* Top Section */}
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
 
-              {/* ======================================
-                  CREATE STRATEGY
-              ====================================== */}
 
               <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
@@ -403,7 +361,6 @@ function StrategyEngine() {
                   className="space-y-5 p-5"
                 >
 
-                  {/* Strategy Name */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Strategy Name
@@ -419,7 +376,6 @@ function StrategyEngine() {
                     />
                   </div>
 
-                  {/* Symbol */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Symbol
@@ -443,7 +399,6 @@ function StrategyEngine() {
                     </select>
                   </div>
 
-                  {/* Indicator */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Indicator
@@ -471,7 +426,6 @@ function StrategyEngine() {
                     </select>
                   </div>
 
-                  {/* Period */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Period
@@ -487,7 +441,6 @@ function StrategyEngine() {
                     />
                   </div>
 
-                  {/* Condition */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                     <div>
@@ -532,7 +485,6 @@ function StrategyEngine() {
 
                   </div>
 
-                  {/* Action */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Action
@@ -577,7 +529,6 @@ function StrategyEngine() {
                     </div>
                   </div>
 
-                  {/* Quantity */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#8494ad]">
                       Quantity (Shares)
@@ -594,7 +545,6 @@ function StrategyEngine() {
                     />
                   </div>
 
-                  {/* Create */}
                   <button
                     type="submit"
                     disabled={loading}
@@ -607,10 +557,6 @@ function StrategyEngine() {
 
                 </form>
               </section>
-
-              {/* ======================================
-                  STRATEGY DETAILS
-              ====================================== */}
 
               <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
@@ -627,7 +573,6 @@ function StrategyEngine() {
                 {selectedStrategy ? (
                   <div className="p-5">
 
-                    {/* Details */}
                     <div className="divide-y divide-[#172b48]">
 
                       <DetailRow
@@ -710,7 +655,6 @@ function StrategyEngine() {
 
                     </div>
 
-                    {/* Actions */}
                     <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
                       <button
@@ -772,9 +716,6 @@ function StrategyEngine() {
               </section>
             </div>
 
-            {/* ======================================
-                MY STRATEGIES
-            ====================================== */}
 
             <section className="rounded-md border border-[#1f3155] bg-[#121b30]">
 
@@ -804,7 +745,6 @@ function StrategyEngine() {
 
               </div>
 
-              {/* Table */}
               <div className="overflow-x-auto p-4">
 
                 {fetching ? (
@@ -982,9 +922,6 @@ function StrategyEngine() {
   );
 }
 
-// --------------------------------------------------
-// Small reusable UI pieces
-// --------------------------------------------------
 
 function DetailRow({ label, value }) {
   return (

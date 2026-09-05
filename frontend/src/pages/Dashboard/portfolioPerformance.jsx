@@ -9,7 +9,6 @@ function PortfolioPerformanceCard() {
   useEffect(() => {
     axios.get("http://localhost:5000/app/portfolio/history",{withCredentials:true})
       .then((res) => {
-        console.log(res.data);
         setPortfolioPerformance(res.data);
       })
       .catch((err) => {

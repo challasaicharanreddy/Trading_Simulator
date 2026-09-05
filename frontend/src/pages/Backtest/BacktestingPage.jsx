@@ -26,9 +26,6 @@ const symbols = [
   "TITN",
 ];
 
-// --------------------------------------------------
-// Reusable Components
-// --------------------------------------------------
 
 function Select({ value, onChange, children }) {
   return (
@@ -80,9 +77,6 @@ function Input({
 
 
 
-// --------------------------------------------------
-// Main Component
-// --------------------------------------------------
 
 export default function BacktestingPage() {
   const navigate = useNavigate();
@@ -114,9 +108,6 @@ export default function BacktestingPage() {
 
   const [error, setError] = useState("");
 
-  // --------------------------------------------------
-  // Form Update
-  // --------------------------------------------------
 
   const update = (key) => (event) => {
     setForm((current) => ({
@@ -125,9 +116,6 @@ export default function BacktestingPage() {
     }));
   };
 
-  // --------------------------------------------------
-  // Run Backtest
-  // --------------------------------------------------
 
   async function runBacktest(event) {
     event.preventDefault();
@@ -171,13 +159,9 @@ export default function BacktestingPage() {
         }
       );
 
-      console.log(response.data);
 
       setreply(response.data);
 
-      // --------------------------------------------------
-      // Equity Data
-      // --------------------------------------------------
 
       const newequity = [];
       const sample = response.data.pvalues || [];
@@ -191,9 +175,6 @@ export default function BacktestingPage() {
 
       setequity(newequity);
 
-      // --------------------------------------------------
-      // Trade Data
-      // --------------------------------------------------
 
       const newtrade = [];
       const sample2 = response.data.trades || [];
@@ -221,17 +202,11 @@ export default function BacktestingPage() {
     }
   }
 
-  // --------------------------------------------------
-  // UI
-  // --------------------------------------------------
 
   return (
     <div className="min-h-screen bg-[#080e19] text-white">
       <div className="flex min-h-screen">
 
-        {/* ------------------------------------------ */}
-        {/* Sidebar */}
-        {/* ------------------------------------------ */}
 
         <Sidebar
           open={menuOpen}
@@ -246,17 +221,8 @@ export default function BacktestingPage() {
           />
         )}
 
-        {/* ------------------------------------------ */}
-        {/* Main */}
-        {/* ------------------------------------------ */}
 
         <main className="min-w-0 flex-1">
-
-          {/* ------------------------------------------ */}
-          {/* Header */}
-          {/* ------------------------------------------ */}
-
-          {/* Header */}
 
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
@@ -290,23 +256,19 @@ export default function BacktestingPage() {
 
             </div>
 
-            {/* Market Status */}
             <MarketStatus />
 
           </header>
 
-          {/* Page Content */}
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* Backtest Configuration */}
 
             <form
               onSubmit={runBacktest}
               className="rounded-md border border-[#1f3155] bg-[#121b30] p-5"
             >
 
-              {/* Configuration Header */}
 
               <div className="mb-5 flex items-start justify-between">
 
@@ -327,11 +289,9 @@ export default function BacktestingPage() {
 
               </div>
 
-              {/* Configuration Sections */}
 
               <div className="space-y-5">
 
-                {/* Backtest Period */}
 
                 <div>
                   <p className="mb-2 text-xs font-semibold tracking-wider text-[#3c85ff]">
@@ -359,7 +319,6 @@ export default function BacktestingPage() {
                   </div>
                 </div>
 
-                {/* Asset & Position */}
 
                 <div>
                   <p className="mb-2 text-xs font-semibold tracking-wider text-[#3c85ff]">
@@ -396,7 +355,6 @@ export default function BacktestingPage() {
                   </div>
                 </div>
 
-                {/* Buy Condition */}
 
                 <Condition
                   title="BUY CONDITION"
@@ -409,7 +367,6 @@ export default function BacktestingPage() {
                   helper="Buy when the selected indicator satisfies this condition."
                 />
 
-                {/* Sell Condition */}
 
                 <Condition
                   title="SELL CONDITION"
@@ -424,7 +381,6 @@ export default function BacktestingPage() {
 
               </div>
 
-              {/* Error */}
 
               {error && (
                 <p className="mt-4 rounded-md border border-[#7f2935] bg-[#421820] px-3 py-2 text-xs text-[#ff8692]">
@@ -432,7 +388,6 @@ export default function BacktestingPage() {
                 </p>
               )}
 
-              {/* Run Button */}
 
               <button
                 type="submit"
@@ -459,9 +414,6 @@ export default function BacktestingPage() {
 
             </form>
 
-            {/* ------------------------------------------ */}
-            {/* Results */}
-            {/* ------------------------------------------ */}
 
             <Results
               results={results}

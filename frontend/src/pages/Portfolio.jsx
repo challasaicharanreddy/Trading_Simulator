@@ -8,179 +8,6 @@ import Sidebar from "../components/Sidebar";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import MarketStatus from "../components/MarketStatus";
 
-const performance = [
-  { day: "Aug 14", value: 91840 },
-  { day: "Aug 15", value: 94200 },
-  { day: "Aug 16", value: 93120 },
-  { day: "Aug 17", value: 97860 },
-  { day: "Aug 18", value: 96940 },
-  { day: "Aug 19", value: 101880 },
-  { day: "Aug 20", value: 104235 },
-];
-
-// const pnl = [
-//   { symbol: "AAPL", pnl: 450 },
-//   { symbol: "NVDA", pnl: 280 },
-//   { symbol: "MSFT", pnl: 120 },
-//   { symbol: "TSLA", pnl: -180 },
-// ];
-
-// const allocation = [
-//   {
-//     name: "AAPL",
-//     value: 33355,
-//     percent: 32,
-//     color: "#4b91ff",
-//   },
-//   {
-//     name: "NVDA",
-//     value: 25016,
-//     percent: 24,
-//     color: "#25d98a",
-//   },
-//   {
-//     name: "MSFT",
-//     value: 18762,
-//     percent: 18,
-//     color: "#b885ff",
-//   },
-//   {
-//     name: "TSLA",
-//     value: 16678,
-//     percent: 16,
-//     color: "#f59e75",
-//   },
-//   {
-//     name: "Cash",
-//     value: 10424,
-//     percent: 10,
-//     color: "#53627d",
-//   },
-// ];
-
-// const holdings = [
-//   [
-//     "AAPL",
-//     "Apple Inc.",
-//     "100",
-//     "$285.00",
-//     "$311.42",
-//     "$31,142",
-//     "+$2,642",
-//     "+9.27%",
-//     "gain",
-//   ],
-//   [
-//     "NVDA",
-//     "NVIDIA Corp.",
-//     "80",
-//     "$134.75",
-//     "$138.25",
-//     "$11,060",
-//     "+$280",
-//     "+2.59%",
-//     "gain",
-//   ],
-//   [
-//     "MSFT",
-//     "Microsoft",
-//     "35",
-//     "$464.37",
-//     "$467.80",
-//     "$16,373",
-//     "+$120",
-//     "+0.74%",
-//     "gain",
-//   ],
-//   [
-//     "TSLA",
-//     "Tesla Inc.",
-//     "20",
-//     "$294.40",
-//     "$285.40",
-//     "$5,708",
-//     "-$180",
-//     "-3.06%",
-//     "loss",
-//   ],
-// ];
-
-// function Sidebar({ open, onClose }) {
-//   const {user,isLoading}=useAuth()
-//   if(isLoading) return;
-//   const nav = [
-//     ["Dashboard", LayoutDashboard, "/"],
-//     ["Portfolio", PieChart, "/portfolio"],
-//     ["Transactions", CircleDollarSign, "/transactions"],
-//     ["Order Engine", TrendingUp, "/"],
-//     ["Strategies", Settings, "/"],
-//     ["Backtesting", BarChart3, "/"],
-//   ];
-
-//   return (
-//     <aside
-//       className={`
-//         ${open ? "translate-x-0" : "-translate-x-full"}
-//         fixed inset-y-0 left-0 z-30
-//         flex w-[176px] flex-col
-//         border-r border-[#1e365f]
-//         bg-[#0b1222]
-//         px-2 py-5
-//         transition-transform
-//         lg:static lg:translate-x-0
-//       `}
-//     >
-//       <div className="flex items-center gap-2 px-3">
-//         <div className="grid size-5 place-items-center rounded-sm bg-[#3c85ff] text-white">
-//           <TrendingUp size={13} />
-//         </div>
-
-//         <span className="text-xs sm:text-sm font-bold tracking-wide text-white">
-//           QUANT_X
-//         </span>
-
-//         <button
-//           onClick={onClose}
-//           className="ml-auto text-slate-400 lg:hidden"
-//           aria-label="Close menu"
-//         >
-//           <X size={16} />
-//         </button>
-//       </div>
-
-//       <nav className="mt-6 space-y-1">
-//         {nav.map(([label, Icon, to]) => (
-//           <Link
-//             key={label}
-//             to={to}
-//             onClick={onClose}
-//             className={`
-//               flex items-center gap-3 rounded-md px-3 py-2 text-[12px]
-//               ${
-//                 label === "Portfolio"
-//                   ? "border border-[#367eff] bg-[#172852] text-white"
-//                   : "text-[#70819f] hover:bg-[#17203a] hover:text-white"
-//               }
-//             `}
-//           >
-//             <Icon size={15} />
-//             {label}
-//           </Link>
-//         ))}
-//       </nav>
-
-//       <div className="mt-auto rounded-md border border-[#1d2e4e] bg-[#101a2e] p-2">
-//         <p className="text-[11px] font-semibold text-white">
-//           {user.username}
-//         </p>
-
-//         <p className="text-[9px] text-[#6f819e]">
-//           {user.email}
-//         </p>
-//       </div>
-//     </aside>
-//   );
-// }
 
 function Stat({ label, value, detail, tone, isPnL }) {
   const isLoss = tone === "loss" || (isPnL && String(value).startsWith("-"));
@@ -279,11 +106,6 @@ export default function PortfolioPage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  const latest = performance.at(-1).value;
-  const previous = performance.at(-2).value;
-
-  const delta = latest - previous;
 
   const [holdings, setholdings] = useState([]);
   const [pnl, setpnl] = useState([]);
@@ -444,7 +266,6 @@ export default function PortfolioPage() {
         )}
 
         <main className="min-w-0 flex-1">
-          {/* Header */}
 
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
             <div className="flex items-center gap-3">
@@ -481,7 +302,6 @@ export default function PortfolioPage() {
           </header>
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
-            {/* Portfolio Stats */}
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Stat
@@ -537,132 +357,7 @@ export default function PortfolioPage() {
               />
             </div>
 
-            {/* Portfolio Performance */}
-
-            {/* <Card
-              title="Portfolio Performance"
-              action={
-                <div className="text-right text-xs text-[#71829d]">
-                  Last Updated
-                  <br />
-
-                  <span className="text-white">
-                    Aug 20, 2026, 4:00 PM
-                  </span>
-                </div>
-              }
-            >
-              <div className="flex items-end justify-between px-4 pt-4">
-                <div>
-                  <p className="font-mono text-2xl font-semibold">
-                    ${latest.toLocaleString()}
-                  </p>
-
-                  <p className="mt-1 flex items-center gap-1 text-xs text-gain">
-                    <TrendingUp size={13} />
-                    +${delta.toLocaleString()} from previous day
-                  </p>
-                </div>
-
-                <span className="rounded border border-[#29456d] px-2 py-1 text-xs text-[#8292ac]">
-                  Daily snapshots
-                </span>
-              </div>
-
-              <div className="h-[260px] px-2 pb-4 pt-5 sm:h-[320px]">
-                <ResponsiveContainer
-                  width="100%"
-                  height="100%"
-                >
-                  <AreaChart
-                    data={performance}
-                    margin={{
-                      left: 10,
-                      right: 16,
-                      top: 10,
-                      bottom: 0,
-                    }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="portfolioFill"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#4b91ff"
-                          stopOpacity={0.22}
-                        />
-
-                        <stop
-                          offset="100%"
-                          stopColor="#4b91ff"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-
-                    <CartesianGrid
-                      stroke="#1d3153"
-                      strokeDasharray="3 3"
-                      vertical={false}
-                    />
-
-                    <XAxis
-                      dataKey="day"
-                      tick={{
-                        fill: "#71829d",
-                        fontSize: 10,
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-
-                    <YAxis
-                      tick={{
-                        fill: "#71829d",
-                        fontSize: 10,
-                      }}
-                      axisLine={false}
-                      tickLine={false}
-                      tickFormatter={(v) =>
-                        `$${Math.round(v / 1000)}k`
-                      }
-                      domain={[88000, 108000]}
-                    />
-
-                    <Tooltip
-                      contentStyle={{
-                        background: "#101a2e",
-                        border: "1px solid #29456d",
-                        borderRadius: 5,
-                        fontSize: 12,
-                      }}
-                      formatter={(v) => [
-                        `$${Number(v).toLocaleString()}`,
-                        "Portfolio",
-                      ]}
-                    />
-
-                    <Area
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#4b91ff"
-                      strokeWidth={2}
-                      fill="url(#portfolioFill)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </Card> */}
-
-            {/* Analytics Charts */}
-
             <div className="grid gap-5 lg:grid-cols-2">
-              {/* Current P/L */}
 
               <Card title="Current P/L by Holding">
                 <div className="h-[280px] p-4">
@@ -741,8 +436,6 @@ export default function PortfolioPage() {
                   </ResponsiveContainer>
                 </div>
               </Card>
-
-              {/* Portfolio Allocation */}
 
               <Card title="Portfolio Allocation">
                 <div className="grid items-center gap-2 p-4 sm:grid-cols-[1fr_1.2fr]">
@@ -827,8 +520,6 @@ export default function PortfolioPage() {
                 </div>
               </Card>
             </div>
-
-            {/* Holdings */}
 
             <Card
               title="Holdings"

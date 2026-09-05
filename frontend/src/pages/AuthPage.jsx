@@ -60,7 +60,6 @@ export default function AuthPage() {
             email:form.email,
             password:form.password
             },{withCredentials:true});
-            console.log(reply);
             setSubmitted(true)
             if(reply.status==200) {
                 await checkAuth()
@@ -81,7 +80,6 @@ export default function AuthPage() {
                 email:form.email,
                 password:form.password
             },{withCredentials:true});
-            console.log(reply)
             if(reply.status==200) {
                 messageref.current.textContent=reply.data.message;
                 navigate("/login")
@@ -140,7 +138,6 @@ export default function AuthPage() {
 
           {submitted && (
             <div ref={messageref} className="mb-5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300" role="status">
-              {/* {isRegister ? "Account form ready — connect your auth service to finish registration." : "Sign-in form ready — connect your auth service to continue."} */}
             </div>
           )}
 

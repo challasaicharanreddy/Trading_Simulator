@@ -77,7 +77,6 @@ function Panel({ title, icon: Icon, children, className = "" }) {
 }
 
 
-// ---- Main page ----------------------------------------------------------
 
 export default function StockPage() {
     const { symbol } = useParams()
@@ -130,7 +129,6 @@ export default function StockPage() {
         socket.emit("subscribe",symbol);
 
         const addAggregation=(d)=>{
-            console.log("inside add aggregation")
             const new_data={
                 time: Math.floor(new Date(d.timestamp).getTime() / 1000),
                 open: d.open,
@@ -141,7 +139,6 @@ export default function StockPage() {
             candleSeriesRef.current?.update(new_data);
         }
         const updateRealTimeData=(d)=>{
-          console.log("inside updreal time")
             setrealtimedata(d);
         }
         socket.on("new_minute_aggregation",addAggregation);
@@ -168,7 +165,6 @@ export default function StockPage() {
             }
             setholdings(cleanedData);
             setdata(formattedData);
-            console.log(formattedData)
             setrealtimedata(result.data[result.data.length-1]);
         }
         call()
@@ -278,7 +274,6 @@ export default function StockPage() {
   const qty = Number.isFinite(quantity) && quantity > 0 ? quantity : 0
   const estimatedCost = qty * stock.price
 
-  // Position calculations
   const { quantity: posQty, avgCost } = stock.position
   const currentValue = posQty * stock.price
   const costBasis = posQty * avgCost
@@ -300,7 +295,6 @@ export default function StockPage() {
         )}
 
         <main className="min-w-0 flex-1">
-          {/* Header */}
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
             <div className="flex items-center gap-3">
               <button
@@ -337,7 +331,6 @@ export default function StockPage() {
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* Identity + price */}
             <section className="flex flex-col gap-4 rounded-md border border-[#1f3155] bg-[#121b30] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-3">
@@ -375,12 +368,9 @@ export default function StockPage() {
               </div>
             </section>
 
-            {/* Chart + trade layout */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              {/* Chart column */}
               <div className="flex flex-col gap-6 lg:col-span-2">
                 <Panel className="!p-0 overflow-hidden">
-                  {/* Chart header: OHLC + timeframe */}
                   <div className="flex flex-col gap-4 border-b border-[#1f3155] p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                       <OhlcCell label="Open" value={fmtNum(cursordata.open || stock.ohlc.open)} />
@@ -412,7 +402,6 @@ export default function StockPage() {
                     </div>
                   </div>
 
-                  {/* Candlestick chart placeholder */}
                   <div ref={chartref}
                     id="tv-lightweight-chart"
                     className="relative w-full h-[320px] bg-[#080e19] sm:h-[420px]"
@@ -424,7 +413,6 @@ export default function StockPage() {
                   </div>
                 </Panel>
 
-                {/* Market details */}
                 <Panel title="Market Details" icon={Activity}>
                   <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
                     <StatRow label="Open" value={fmtMoney(stock.market.open)} />
@@ -446,9 +434,7 @@ export default function StockPage() {
                 </Panel>
               </div>
 
-              {/* Sidebar: position + trade */}
               <div className="flex flex-col gap-6">
-                {/* Your Position */}
                 <Panel title="Your Position" icon={TrendingUp}>
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-sm text-[#71829d]">Status</span>
@@ -474,7 +460,6 @@ export default function StockPage() {
                   />
                 </Panel>
 
-                {/* Trade */}
                 <Panel title="Trade" icon={CandlestickChart}>
                   <label
                     htmlFor="quantity"
@@ -529,7 +514,6 @@ export default function StockPage() {
                   </div>
                 </div>
 
-                {/* Connection status */}
                 <div className="flex items-center justify-between rounded-md border border-[#1f3155] bg-[#121b30] px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span className="relative flex size-2">

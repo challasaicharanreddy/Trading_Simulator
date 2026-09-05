@@ -40,7 +40,6 @@ function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
 
         <div className="flex items-center gap-3">
 
-          {/* Socket connection */}
           <span
             className={`text-xs font-medium ${
               isConnected ? "text-gain" : "text-loss"
@@ -49,7 +48,7 @@ function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
             ● {isConnected ? "LIVE" : "DISCONNECTED"}
           </span>
 
-          {/* Market status */}
+
           <span
             className={`text-xs font-medium ${
               isMarketOpen ? "text-gain" : "text-loss"

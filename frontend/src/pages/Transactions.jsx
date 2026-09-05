@@ -94,24 +94,20 @@ export default function TransactionsPage() {
     return transactions.filter(({ id, row, date }) => {
       const executedDate = new Date(date);
 
-      // BUY / SELL filter
       const typeMatch =
         type === "All Transactions" ||
         row[1] === type.toUpperCase();
 
-      // Stock filter
       const stockMatch =
         stock === "All Stocks" ||
         row[2] === stock;
 
-      // Search filter
       const searchMatch =
         !query ||
         `${id} ${row.join(" ")}`
           .toLowerCase()
           .includes(query.toLowerCase());
 
-      // Date filter
       let dateMatch = true;
 
       if (range === "Today") {
@@ -213,7 +209,6 @@ export default function TransactionsPage() {
 
         <main className="min-w-0 flex-1">
 
-          {/* Header */}
           <header className="flex h-20 items-center justify-between border-b border-[#182944] px-6 lg:px-8">
 
             <div className="flex items-center gap-3">
@@ -254,7 +249,6 @@ export default function TransactionsPage() {
 
           <div className="mx-auto max-w-[1280px] space-y-6 p-6 lg:p-8">
 
-            {/* Metrics */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
               <Metric
@@ -296,7 +290,6 @@ export default function TransactionsPage() {
 
             </div>
 
-            {/* Filters */}
             <section className="rounded-md border border-[#1f3155] bg-[#121b30] p-5">
 
               <div className="mb-3 flex items-center gap-2 text-base font-semibold text-white">
@@ -372,7 +365,6 @@ export default function TransactionsPage() {
 
             </section>
 
-            {/* Transaction History */}
             <section className="overflow-hidden rounded-md border border-[#1f3155] bg-[#121b30]">
 
               <div className="flex items-center justify-between border-b border-[#1f3155] px-5 py-4">
@@ -446,7 +438,6 @@ export default function TransactionsPage() {
                           className="border-b border-[#182944] text-sm text-[#b8c4d8] last:border-0 hover:bg-[#17243e]"
                         >
 
-                          {/* Date & ID */}
                           <td className="px-3 py-3">
 
                             <div>
@@ -459,7 +450,6 @@ export default function TransactionsPage() {
 
                           </td>
 
-                          {/* Type */}
                           <td className="px-3 py-3">
 
                             <span
@@ -473,27 +463,22 @@ export default function TransactionsPage() {
 
                           </td>
 
-                          {/* Symbol */}
                           <td className="px-3 py-3 font-mono text-sm font-semibold text-white">
                             {row[2]}
                           </td>
 
-                          {/* Quantity */}
                           <td className="px-3 py-3 font-mono text-sm">
                             {row[3]}
                           </td>
 
-                          {/* Price */}
                           <td className="px-3 py-3 font-mono text-sm">
                             {row[4]}
                           </td>
 
-                          {/* Total Value */}
                           <td className="px-3 py-3 font-mono text-sm">
                             {row[5]}
                           </td>
 
-                          {/* P&L */}
                           <td
                             className={`px-3 py-3 font-mono text-sm ${row[6] == "--"
                                 ? "text-[#71829d]"
@@ -532,7 +517,6 @@ export default function TransactionsPage() {
 
               </div>
 
-              {/* Pagination */}
               <div className="flex flex-col gap-3 border-t border-[#1f3155] px-3 py-3 text-xs text-[#71829d] sm:flex-row sm:items-center sm:justify-between">
 
                 <span>
