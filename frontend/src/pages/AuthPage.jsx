@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound, Activity } from "lucide-react"
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import MarketStatus from "../components/MarketStatus";
+
 
 function Brand() {
   return (
@@ -15,40 +17,7 @@ function Brand() {
   )
 }
 
-function MarketStatus() {
-    const now = new Date();
 
-    const nyTime = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    }).format(now);
-    console.log(nyTime)
-    const [hour, minute] = nyTime.split(":").map(Number);
-
-    const isOpen =
-        (hour > 9 || (hour === 9 && minute >= 30)) && hour < 16;
-  return (
-    <div
-      className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs ${
-        isOpen
-          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-          : "border-red-500/30 bg-red-500/10 text-red-300"
-      }`}
-    >
-      <span
-        className={`size-2 rounded-full ${
-          isOpen
-            ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)]"
-            : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.85)]"
-        }`}
-      />
-
-      {isOpen ? "Market Open" : "Market Closed"}
-    </div>
-  );
-}
 
 function Field({ label, type = "text", placeholder, value, onChange, icon: Icon, action }) {
   return (

@@ -3,12 +3,15 @@ import { fetchPriceFromAPI, fetchWithCache } from "../services/marketData.js";
 import marketdata from "../models/marketData.js";
 import candleAggregation from "../services/candleAggregation.js";
 import { checkAndExecuteStrategies } from "../services/strategyChecker.js";
-
+import {MarketOpen} from "../services/marketClock.js";
 const Model = marketdata;
 
 
 const symbols = ["AAPL", "MSFT", "TSLA", "TITN", "NVDA", "AMZN", "GOOGL", "META"];
 async function runPriceTick() {
+  if(!MarketOpen()){
+    return 
+  }
   for (const stock of symbols) {
     try {
       const data = await fetchWithCache(stock);
@@ -47,6 +50,9 @@ async function scheduler() {
   setInterval(runPriceTick, 10000);
 
   setInterval(async () => {
+    if(!MarketOpen()){
+      return 
+    }
     for (const stock of symbols) {
       try {
         await candleAggregation(stock);
