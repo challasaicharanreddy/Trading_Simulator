@@ -758,8 +758,7 @@ export default function DocumentationPage() {
             </Section>
 
             <footer className="py-8 text-xs text-[#5c6d8a]">
-              QUANT_X Documentation · Keep your rules explicit,
-              measurable, and reviewable.
+              QUANT_X Documentation · Crafted by Abhiram and Sai Charan.
             </footer>
           </article>
 

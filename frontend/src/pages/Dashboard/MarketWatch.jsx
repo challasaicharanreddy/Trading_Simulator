@@ -15,7 +15,7 @@ export const watchlist = [
 
 function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
   const { socket, isConnected } = useSocket();
-  const { open: isMarketOpen } = useMarketStatus();
+  const marketStatus = useMarketStatus();
 
   const [internalMarketData, setInternalMarketData] = useState(watchlist);
 
@@ -51,10 +51,10 @@ function MarketWatch({ selected, setSelected, marketData: propMarketData }) {
 
           <span
             className={`text-xs font-medium ${
-              isMarketOpen ? "text-gain" : "text-loss"
+              marketStatus ? "text-gain" : "text-loss"
             }`}
           >
-            ● {isMarketOpen ? "MARKET OPEN" : "MARKET CLOSED"}
+            ● {marketStatus ? "MARKET OPEN" : "MARKET CLOSED"}
           </span>
 
         </div>

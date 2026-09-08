@@ -123,7 +123,7 @@ export default function Results({
 
             <Metric
               label="Initial Capital"
-              value="$1,000,000"
+              value="$100,000"
             />
 
             <Metric
