@@ -29,7 +29,7 @@ router.post("/register",async (req,res)=>{
 
     await Portfolio.create({
         user: user._id,
-        cashBalance: 1000000, 
+        cashBalance: 100000, 
     });
 
     return res.status(200).json({
