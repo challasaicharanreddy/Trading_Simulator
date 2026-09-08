@@ -67,7 +67,7 @@ export default function AuthPage() {
                 navigate("/");
             }
         }catch(error) {
-            messageref.current.textContent="Invalid Credentials Brooo...Please recheck!!"
+            messageref.current.textContent="Invalid Credentials.Please recheck!!"
         }
     }else{
         try{
@@ -142,8 +142,8 @@ export default function AuthPage() {
           )}
 
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {isRegister && <Field label="Full name" placeholder="Alex Mercer" value={form.name} onChange={update("name")} icon={UserRound} />}
-            <Field label="Email address" type="email" placeholder="you@example.com" value={form.email} onChange={update("email")} icon={Mail} />
+            {isRegister && <Field label="Full name" placeholder="Tony Stark" value={form.name} onChange={update("name")} icon={UserRound} />}
+            <Field label="Email address" type="email" placeholder="thor@asgard.com" value={form.email} onChange={update("email")} icon={Mail} />
             <Field
               label="Password"
               type={showPassword ? "text" : "password"}

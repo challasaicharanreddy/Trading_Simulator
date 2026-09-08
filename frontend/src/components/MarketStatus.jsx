@@ -1,9 +1,9 @@
 import { useMarketStatus } from "../context/MarketStatusContext";
 
 function MarketStatus() {
-  const { open } = useMarketStatus();
+  const marketStatus = useMarketStatus();
 
-  const isOpen = open;
+  const isOpen = marketStatus;
 
   return (
     <div

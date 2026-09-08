@@ -16,7 +16,7 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
     buyThreshold = Number(buyThreshold);
     sellThreshold = Number(sellThreshold);
 
-    let cash = 1000000;
+    let cash = 100000;
     let shares = 0;
     let avgCost = 0;
     let peak = cash;
@@ -109,7 +109,7 @@ export default async function (start, end, buyIndicator, sellIndicator, buyThres
     
 
     let winRate=totalTrades === 0 ? 0 : (profitableTrades / totalTrades) * 100;
-    const initialCapital=1000000;
+    const initialCapital=100000;
     const lastPrice = prices[prices.length - 1];
 
     const finalPortfolioValue =
