@@ -13,13 +13,12 @@ export function MarketStatusProvider({ children }) {
     const fetchMarketStatus = async () => {
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL}/app/api/market/status`,
+                `${import.meta.env.VITE_SERVER_URL}/api/market/status`,
                 {
                     withCredentials: true
                 }
             );
-
-            setMarketStatus(response.data);
+            setMarketStatus(response.data.open);
 
         } catch (error) {
             console.error("Failed to fetch market status", error);

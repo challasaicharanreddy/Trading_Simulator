@@ -36,7 +36,7 @@ app.use("/app/portfolio", portfolioRoutes);
 app.use("/app/backtest", backtestRoutes)
 app.use("/app/fetchprice", fetchStockPriceRoutes);
 app.use("/app/transactions", transactionRoutes);
-app.get("/app/api/market/status", (req, res) => {
+app.get("/api/market/status", (req, res) => {
     const market = getMarketStatus();
     res.json({
         status: market.status,
