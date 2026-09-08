@@ -34,10 +34,10 @@ candleSchema.index(
     { timestamp: 1 },
     { expireAfterSeconds: 365 * 24 * 60 * 60 }
 );
-candleSchema.index({
-    symbol:1,
-    timestamp:1
-})
+candleSchema.index(
+    { symbol: 1, timestamp: 1 },
+    { unique: true }
+);
 
 const MinuteCandle =
   mongoose.models.MinuteCandle ||

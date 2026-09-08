@@ -31,9 +31,9 @@ userSchema.index(
     { timestamp: 1 },
     { expireAfterSeconds: 1 * 24 * 60 * 60 }
 );
-userSchema.index({
-    symbol: 1,
-    timestamp: 1
-});
+userSchema.index(
+    { symbol: 1, timestamp: 1 },
+    { unique: true }
+);
 
 export default mongoose.model("MarketData", userSchema);
