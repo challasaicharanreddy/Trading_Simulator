@@ -155,7 +155,7 @@ export default function AuthPage() {
             />
             {isRegister && <Field label="Confirm password" type={showPassword ? "text" : "password"} placeholder="Re-enter your password" value={form.confirm} onChange={update("confirm")} icon={LockKeyhole} />}
 
-            {!isRegister && <div className="flex justify-end"><button type="button" className="text-xs font-medium text-blue-400 transition hover:text-blue-300">Forgot password?</button></div>}
+            {/* {!isRegister && <div className="flex justify-end"><button type="button" className="text-xs font-medium text-blue-400 transition hover:text-blue-300">Forgot password?</button></div>} */}
 
             <button type="submit" className="group flex h-11 w-full items-center justify-center gap-2 rounded-md bg-blue-500 text-sm font-semibold text-slate-950 transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50">
               {isRegister ? "Create Account" : "Sign In"}

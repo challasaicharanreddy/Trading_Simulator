@@ -1,6 +1,7 @@
 import express from "express";
 import fetchStockMinutes from "../services/fetchStockMinutes.js";
 import holdings from "../models/holdings.js";
+import portfolio from "../models/portfolio.js";
 
 const router=express.Router();
 
@@ -12,7 +13,14 @@ router.post("/minuteCandles",async(req,res)=>{
 });
 router.post("/holdings",async(req,res)=>{
     const {symbol}=req.body;
-    const data=await holdings.findOne({symbol});
+    const userid=req.user.id;
+    const portfoliodoc=await portfolio.findOne({user:userid})
+    const portfolioid=portfoliodoc._id
+    const data=await holdings.findOne(
+        {
+            portfolio:portfolioid,
+            symbol:symbol
+        });
 
     return res.json(data);
 });

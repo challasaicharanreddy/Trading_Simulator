@@ -355,7 +355,7 @@ export default function DashboardPage() {
                 isPnL
                 numericValue={metrics?.totalPnL}
                 value={metrics?.totalPnL !== undefined ? `${metrics.totalPnL >= 0 ? "+" : "-"}$${Math.abs(metrics.totalPnL).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
-                detail={metrics?.totalPnLPercentage !== undefined ? `${metrics.totalPnLPercentage >= 0 ? "+" : ""}${metrics.totalPnLPercentage.toFixed(2)}%` : ""}
+                detail={metrics?.totalPnLPercentage !== undefined ? `${metrics.totalPnLPercentage >= 0 ? "+" : ""}${metrics.totalPnLPercentage.toFixed(4)}%` : ""}
               />
 
             </div>
