@@ -167,7 +167,6 @@ export default function StockPage() {
             }
             setholdings(cleanedData);
             setdata(formattedData);
-            console.log(result.data[result.data.length-1])
             setrealtimedata(result.data[result.data.length-1]);
         }
         call()
