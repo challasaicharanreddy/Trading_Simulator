@@ -139,7 +139,9 @@ export default function StockPage() {
             candleSeriesRef.current?.update(new_data);
         }
         const updateRealTimeData=(d)=>{
+          if(d.symbol==symbol) {
             setrealtimedata(d);
+          }
         }
         socket.on("new_minute_aggregation",addAggregation);
         socket.on("priceChange",updateRealTimeData);

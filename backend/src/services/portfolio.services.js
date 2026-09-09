@@ -117,8 +117,8 @@ async function takeSnapshotForUser(userId) {
     const previousSnapshot=await PortfolioSnapshot.findOne({user:userId}).sort({ date: -1 });
     const todayPnL=portfolioValue-previousSnapshot.portfolioValue;
     const todayPnLPercentage=(todayPnL / previousSnapshot.portfolioValue) * 100;
-    const totalPnL=portfolioValue-1000000;
-    const totalPnLPercentage=(totalPnL/1000000)*100;
+    const totalPnL=portfolioValue-100000;
+    const totalPnLPercentage=(totalPnL/100000)*100;
     return {
       portfolioValue,cash,todayPnL,todayPnLPercentage,totalPnL,totalPnLPercentage
     }
